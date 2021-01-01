@@ -131,9 +131,9 @@ RegisterServerEvent('gcPhone:twitter_changeUsername')
 AddEventHandler('gcPhone:twitter_changeUsername', function(newUsername)
     local sourcePlayer = tonumber(source)
     local identifier = getPlayerID(source)
-    getUser(identifier, function(user)
+    getUser(identifier.PlayerData.steam, function(user)
         MySQL.Async.execute("UPDATE `twitter_accounts` SET `username`= @newUsername WHERE identifier = @identifier", {
-            ['@identifier'] = identifier,
+            ['@identifier'] = identifier.PlayerData.steam,
             ['@newUsername'] = newUsername
         }, function(result)
             if (result == 1) then
@@ -147,9 +147,9 @@ RegisterServerEvent('gcPhone:twitter_setAvatarUrl')
 AddEventHandler('gcPhone:twitter_setAvatarUrl', function(avatarUrl)
     local sourcePlayer = tonumber(source)
     local identifier = getPlayerID(source)
-    getUser(identifier, function(user)
+    getUser(identifier.PlayerData.steam, function(user)
         MySQL.Async.execute("UPDATE `twitter_accounts` SET `avatar_url`= @avatarUrl WHERE identifier = @identifier", {
-            ['@identifier'] = identifier,
+            ['@identifier'] = identifier.PlayerData.steam,
             ['@avatarUrl'] = avatarUrl
         }, function(result)
             if (result == 1) then
@@ -181,7 +181,7 @@ RegisterServerEvent('gcPhone:twitter_getFavoriteTweets')
 AddEventHandler('gcPhone:twitter_getFavoriteTweets', function()
     local sourcePlayer = tonumber(source)
     local srcIdentifier = getPlayerID(source)
-    TwitterGetFavotireTweets(srcIdentifier, function(tweets)
+    TwitterGetFavotireTweets(srcIdentifier.PlayerData.steam, function(tweets)
         TriggerClientEvent('gcPhone:twitter_getFavoriteTweets', sourcePlayer, tweets)
     end)
 end)
@@ -190,21 +190,21 @@ RegisterServerEvent('gcPhone:twitter_postTweets')
 AddEventHandler('gcPhone:twitter_postTweets', function(message, image)
     local sourcePlayer = tonumber(source)
     local srcIdentifier = getPlayerID(source)
-    TwitterPostTweet(message, image, sourcePlayer, srcIdentifier)
+    TwitterPostTweet(message, image, sourcePlayer, srcIdentifier.PlayerData.steam)
 end)
 
 RegisterServerEvent('gcPhone:twitter_toogleLikeTweet')
 AddEventHandler('gcPhone:twitter_toogleLikeTweet', function(tweetId)
     local sourcePlayer = tonumber(source)
     local srcIdentifier = getPlayerID(source)
-    TwitterToogleLike(srcIdentifier, tweetId, sourcePlayer)
+    TwitterToogleLike(srcIdentifier.PlayerData.steam, tweetId, sourcePlayer)
 end)
 
 RegisterServerEvent('gcPhone:twitter_toggleDeleteTweet')
 AddEventHandler('gcPhone:twitter_toggleDeleteTweet', function(tweetId)
     local sourcePlayer = tonumber(source)
     local srcIdentifier = getPlayerID(source)
-    TwitterToogleDelete(srcIdentifier, tweetId, sourcePlayer)
+    TwitterToogleDelete(srcIdentifier.PlayerData.steam, tweetId, sourcePlayer)
 end)
 
 

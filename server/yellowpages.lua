@@ -1,14 +1,17 @@
---
---  LEAKED BY S3NTEX -- 
---  https://discord.gg/aUDWCvM -- 
---  fivemleak.com -- 
---  fkn crew -- 
 function YellowPagesGetPosts(a, b)
-    MySQL.Async.fetchAll([===[SELECT yellowpages_posts.*, twitter_accounts.username as author, twitter_accounts.avatar_url as authorIcon, users.firstname as firstname, users.lastname as lastname FROM yellowpages_posts LEFT JOIN twitter_accounts ON yellowpages_posts.authorId = twitter_accounts.id LEFT JOIN users ON yellowpages_posts.realUser = users.identifier ORDER BY time DESC LIMIT 30]===], {}, b)
+    MySQL.Async.fetchAll([===[SELECT yellowpages_posts.*, twitter_accounts.username as author, twitter_accounts.avatar_url as authorIcon, players.name as firstname FROM yellowpages_posts LEFT JOIN twitter_accounts ON yellowpages_posts.authorId = twitter_accounts.id LEFT JOIN players ON yellowpages_posts.realUser = players.steam ORDER BY time DESC LIMIT 30]===], {}, b)
 end
 function YellowPagesPostIlan(a, b, c, d, e)
+    
     getUserYellow(d, function(f)
-        MySQL.Async.fetchAll("SELECT phone_number FROM users WHERE users.identifier = @realUser", {["@realUser"] = d}, function(g)MySQL.Async.insert("INSERT INTO yellowpages_posts (`authorId`, `message`, `image`, `realUser`, `phone`) VALUES(@authorId, @message, @image, @realUser, @phone);", {["@authorId"] = f.id, ["@message"] = a, ["@image"] = b, ["@realUser"] = d, ["@phone"] = g[1].phone_number}, function(h)
+        MySQL.Async.fetchAll("SELECT * FROM players WHERE players.steam = @realUser", {["@realUser"] = d}, function(g)
+            local player = RSCore.Functions.GetPlayer(g[1].steam)
+            MySQL.Async.insert("INSERT INTO yellowpages_posts (`authorId`, `message`, `image`, `realUser`, `phone`) VALUES(@authorId, @message, @image, @realUser, @phone);", {
+                ["@authorId"] = f.id,
+                 ["@message"] = a,
+                  ["@image"] = b,
+                   ["@realUser"] = d,
+                    ["@phone"] = player.PlayerData.charinfo.phone}, function(h)
             post = {}
             post["authorId"] = f.id;
             post["message"] = a;
@@ -78,7 +81,7 @@ RegisterServerEvent('gcPhone:yellow_getMyPosts')
 AddEventHandler('gcPhone:yellow_getMyPosts', function()
     local sourcePlayer = tonumber(source)
     local srcIdentifier = getPlayerID(source)
-    YellowGetMyPosts(srcIdentifier, function(posts)
+    YellowGetMyPosts(srcIdentifier.PlayerData.steam, function(posts)
         TriggerClientEvent('gcPhone:yellow_getMyPosts', sourcePlayer, posts)
     end)
 end)
@@ -87,14 +90,14 @@ RegisterServerEvent('gcPhone:yellow_toggleDeletePost')
 AddEventHandler('gcPhone:yellow_toggleDeletePost', function(id)
     local sourcePlayer = tonumber(source)
     local srcIdentifier = getPlayerID(source)
-    YellowToogleDelete(srcIdentifier, id, sourcePlayer)
+    YellowToogleDelete(srcIdentifier.PlayerData.steam, id, sourcePlayer)
 end)
 
 RegisterServerEvent('gcPhone:yellow_postIlan')
 AddEventHandler('gcPhone:yellow_postIlan', function(message, image)
     local sourcePlayer = tonumber(source)
     local srcIdentifier = getPlayerID(source)
-    YellowPagesPostIlan(message, image, sourcePlayer, srcIdentifier)
+    YellowPagesPostIlan(message, image, sourcePlayer, srcIdentifier.PlayerData.steam)
 end)
 
 function sendDiscordYellow(post)

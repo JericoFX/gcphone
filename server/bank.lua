@@ -25,7 +25,6 @@ AddEventHandler("gcPhone:transfer", function(a, b)
                 TriggerClientEvent("RSCore:Notify", a, "$" .. b .. _U("bank_incoming"))
                 MySQL.Async.fetchAll("SELECT * FROM players WHERE steam = @identifier", {["@identifier"] = z}, function(g)
                     if g[1] then
-                        print(tostring(g[1]))
                         
                         local jugador2 = RSCore.Functions.GetPlayer(g[1].steam)
                         local h = jugador2.PlayerData.charinfo.firstname .. " " .. jugador2.PlayerData.charinfo.lastname; MySQL.Async.fetchAll("INSERT INTO crew_phone_bank (type, identifier, price, name) VALUES (@type, @identifier, @price, @name)", {["@type"] = 1, ["@identifier"] = d.PlayerData.steam, ["@price"] = b, ["@name"] = h}, function(i)TriggerClientEvent("crewPhone:updateHistory", d.PlayerData.source)
@@ -51,7 +50,6 @@ RSCore.Functions.CreateCallback("crew-phone:check-bank", function(a, b)
     local c = a;
     local d = RSCore.Functions.GetPlayer(c)
     MySQL.Async.fetchAll("SELECT * FROM crew_phone_bank WHERE identifier = @identifier ORDER BY time DESC LIMIT 5", {["@identifier"] = d.PlayerData.steam}, function(e)
-        print("49 E FROM BANK IS ")
         b(e)
 
         end)

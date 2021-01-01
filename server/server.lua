@@ -15,24 +15,22 @@ end)
 RegisterServerEvent("crew:onPlayerLoaded")
 AddEventHandler("crew:onPlayerLoaded",function(a)
     local b=tonumber(a)
-    local c=getPlayerID(b)
+    local c=getPlayerID(a)
+  --  print("LINE 19 "..c.PlayerData.steam)
     getOrGeneratePhoneNumber(b,c,function(d)
-    TriggerClientEvent("crew:updatePhone",b,d,getContacts(c),getMessages(c))
+    TriggerClientEvent("crew:updatePhone",b,d,getContacts(c.PlayerData.steam),getMessages(c))
     sendHistoriqueCall(b,d)
     end)
         getUserTwitterAccount(b,c)
     end)
 
-function getNumberPhone(a)
-   local player =  RSCore.Functions.GetPlayer(a)
-   return player.PlayerData.charinfo.phone
 
     --[[ local b=MySQL.Sync.fetchScalar("SELECT users.phone_number FROM users WHERE users.identifier = @identifier",{["@identifier"]=a})
     if b~=nil then 
         return b 
     end;
     return nil  ]]
-end
+
 
 
 MySQL.ready(function ()
@@ -58,8 +56,11 @@ end
 --====================================================================================
 function getSourceFromIdentifier(identifier, cb)
     local xPlayers = RSCore.Functions.GetPlayers()
+
     for k, user in pairs(xPlayers) do
-        if GetPlayerIdentifiers(user)[1] == identifier then
+        print("GETPLAYER = "..tostring(GetPlayerIdentifiers(user)[1]))
+        print("GETPLAYER = "..tostring(identifier.PlayerData.steam))
+        if GetPlayerIdentifiers(user)[1] == identifier.PlayerData.steam then
             cb(user)
             return
         end
@@ -68,44 +69,49 @@ function getSourceFromIdentifier(identifier, cb)
 end
 
 function getIdentifierByPhoneNumber(phone_number) 
+    local player = RSCore.Functions.GetPlayerByPhone(phone_number)
    --[[  local result = MySQL.Sync.fetchAll("SELECT players.steam FROM players WHERE users.phone_number = @phone_number", {
         ['@phone_number'] = phone_number
     })
     if result[1] ~= nil then
         return result[1].identifier
     end ]]
-    return nil
+    if player ~= nil then
+    return player
+    else
+        return nil
+    end
 end
 
 function getUserTwitterAccount(source, _identifier)
     local _source = source
     local identifier = _identifier
-    print(identifier)
+  --  print(identifier)
     local xPlayer = RSCore.Functions.GetPlayer(_source)
 
     MySQL.Async.fetchAll("SELECT * FROM players WHERE steam = @identifier", {
-        ['@identifier'] = identifier
+        ['@identifier'] = identifier.PlayerData.steam
     }, function(result2)
-        print(result2[1])
+      --  print(result2[1])
         local user = result2[1]
         local player = RSCore.Functions.GetPlayer(user.steam)
  
         if user == nil then 
-            karakteribekle(xPlayer.PlayerData.source, identifier)
+            karakteribekle(xPlayer.PlayerData.source, identifier.PlayerData.steam)
         else
           -- *-- print(FirstLastName)
             local FirstLastName = player.PlayerData.charinfo['firstname'] .. ' ' .. player.PlayerData.charinfo['lastname']
-            print(FirstLastName)
+          --  print(FirstLastName)
             TriggerClientEvent('crew:getPlayerBank', _source, xPlayer.PlayerData.money.bank, FirstLastName)
 
             MySQL.Async.fetchScalar("SELECT identifier FROM twitter_accounts WHERE identifier = @identifier", {
-                ['@identifier'] = identifier
+                ['@identifier'] = identifier.PlayerData.steam
             }, function(result)
                 if result ~= nil then
                     TriggerEvent('gcPhone:twitter_login', _source, result)
                 else
                     MySQL.Async.fetchAll("INSERT INTO twitter_accounts (identifier, username) VALUES (@identifier, @username)", { 
-                        ['@identifier'] = identifier,
+                        ['@identifier'] = identifier.PlayerData.steam,
                         ['@username'] = FirstLastName
                     }, function()
                         TriggerEvent('gcPhone:twitter_login', _source, identifier)
@@ -125,15 +131,16 @@ end
 
 function getPlayerID(source)
     local xPlayer = RSCore.Functions.GetPlayer(source)
-    return xPlayer.PlayerData.steam
+    return xPlayer
 end
 
 function getOrGeneratePhoneNumber (sourcePlayer, identifier, cb)
     local sourcePlayer = sourcePlayer
     local identifier = identifier
-    local myPhoneNumber = getNumberPhone(identifier)
-
-    if myPhoneNumber == '0' or myPhoneNumber == nil or myPhoneNumber == '' then
+    print(identifier)
+    local myPhoneNumber = identifier.PlayerData.charinfo.phone
+    cb(myPhoneNumber)
+  --[[   if myPhoneNumber == '0' or myPhoneNumber == nil or myPhoneNumber == '' then
         repeat
             myPhoneNumber = getPhoneRandomNumber()
             local id = getIdentifierByPhoneNumber(myPhoneNumber)
@@ -144,20 +151,22 @@ function getOrGeneratePhoneNumber (sourcePlayer, identifier, cb)
         }, function ()
             cb(myPhoneNumber)
         end)
-    else
-        cb(myPhoneNumber)
-    end
+    else ]]
+   
+    --end
 end
 
 --====================================================================================
 --  Contacts
 --====================================================================================
 function getContacts(identifier)
-    local result = MySQL.Sync.fetchAll("SELECT phone_users_contacts.* FROM phone_users_contacts WHERE phone_users_contacts.identifier = @identifier", {
+ 
+    local result = MySQL.Sync.fetchAll("SELECT * FROM phone_users_contacts WHERE identifier = @identifier", {
         ['@identifier'] = identifier
     })
     return result
 end
+
 
 function addContact(source, identifier, number, display)
     local sourcePlayer = tonumber(source)
@@ -182,6 +191,7 @@ function updateContact(source, identifier, id, number, display)
 end
 
 function deleteContact(source, identifier, id)
+    print("DELETE"..tostring(identifier))
     local sourcePlayer = tonumber(source)
     MySQL.Sync.execute("DELETE FROM phone_users_contacts WHERE `identifier` = @identifier AND `id` = @id", {
         ['@identifier'] = identifier,
@@ -197,10 +207,11 @@ function deleteAllContact(identifier)
 end
 
 function notifyContactChange(source, identifier)
+    print("notifyContactChange "..identifier)
     local sourcePlayer = tonumber(source)
-    local identifier = identifier
+    local identifier = getPlayerID(identifier)
     if sourcePlayer ~= nil then 
-        TriggerClientEvent("gcPhone:contactList", sourcePlayer, getContacts(identifier))
+        TriggerClientEvent("gcPhone:contactList", sourcePlayer, getContacts(identifier.PlayerData.steam))
     end
 end
 
@@ -228,32 +239,29 @@ RegisterServerEvent('gcPhone:addContact')
 AddEventHandler('gcPhone:addContact', function(display, phoneNumber)
     local sourcePlayer = tonumber(source)
     local identifier = getPlayerID(sourcePlayer)
-    addContact(sourcePlayer, identifier, phoneNumber, display)
+    addContact(sourcePlayer, identifier.PlayerData.steam, phoneNumber, display)
 end)
 
 RegisterServerEvent('gcPhone:updateContact')
 AddEventHandler('gcPhone:updateContact', function(id, display, phoneNumber)
     local sourcePlayer = tonumber(source)
     local identifier = getPlayerID(sourcePlayer)
-    updateContact(sourcePlayer, identifier, id, phoneNumber, display)
+    updateContact(sourcePlayer, identifier.PlayerData.steam, id, phoneNumber, display)
 end)
 
 RegisterServerEvent('gcPhone:deleteContact')
 AddEventHandler('gcPhone:deleteContact', function(id)
     local sourcePlayer = tonumber(source)
     local identifier = getPlayerID(sourcePlayer)
-    deleteContact(sourcePlayer, identifier, id)
+    deleteContact(sourcePlayer, identifier.PlayerData.steam, id)
 end)
 
 --====================================================================================
 --  Messages
 --====================================================================================
 function getMessages(identifier)
-    print("PLAYERS"..identifier)
-   local player = RSCore.Functions.GetPlayer(identifier)
-
-    local result = MySQL.Sync.fetchAll("SELECT phone_messages.*, '"..player.PlayerData.charinfo.phone.."' FROM phone_messages LEFT JOIN players ON players.steam = @identifier WHERE phone_messages.receiver = '"..player.PlayerData.charinfo.phone.."'", {
-         ['@identifier'] = identifier
+    local result = MySQL.Sync.fetchAll("SELECT phone_messages.*, '"..identifier.PlayerData.charinfo.phone.."' FROM phone_messages LEFT JOIN players ON players.steam = @identifier WHERE phone_messages.receiver = '"..identifier.PlayerData.charinfo.phone.."'", {
+         ['@identifier'] = identifier.PlayerData.steam
     })
     return result
 end
@@ -278,9 +286,10 @@ end
 function addMessage(source, identifier, phone_number, message)
     local sourcePlayer = tonumber(source)
     local otherIdentifier = getIdentifierByPhoneNumber(phone_number)
-    local myPhone = getNumberPhone(identifier)
+    local myPhone = identifier.PlayerData.charinfo.phone
     if otherIdentifier ~= nil then 
         local tomess = _internalAddMessage(myPhone, phone_number, message, 0)
+
         getSourceFromIdentifier(otherIdentifier, function (osou)
             if tonumber(osou) ~= nil then 
                 TriggerClientEvent("gcPhone:receiveMessage", tonumber(osou), tomess)
@@ -292,7 +301,7 @@ function addMessage(source, identifier, phone_number, message)
 end
 
 function setReadMessageNumber(identifier, num)
-    local mePhoneNumber = getNumberPhone(identifier)
+    local mePhoneNumber = identifier.PlayerData.charinfo.phone
     MySQL.Async.execute("UPDATE phone_messages SET phone_messages.isRead = 1 WHERE phone_messages.receiver = @receiver AND phone_messages.transmitter = @transmitter", { 
         ['@receiver'] = mePhoneNumber,
         ['@transmitter'] = num
@@ -308,14 +317,14 @@ end
 function deleteAllMessageFromPhoneNumber(source, identifier, phone_number)
     local source = source
     local identifier = identifier
-    local mePhoneNumber = getNumberPhone(identifier)
+    local mePhoneNumber = identifier.PlayerData.charinfo.phone
     MySQL.Async.execute("DELETE FROM phone_messages WHERE `receiver` = @mePhoneNumber and `transmitter` = @phone_number", {
         ['@mePhoneNumber'] = mePhoneNumber,['@phone_number'] = phone_number
     })
 end
 
 function deleteAllMessage(identifier)
-    local mePhoneNumber = getNumberPhone(identifier)
+    local mePhoneNumber = identifier.PlayerData.charinfo.phone
     MySQL.Async.execute("DELETE FROM phone_messages WHERE `receiver` = @mePhoneNumber", {
         ['@mePhoneNumber'] = mePhoneNumber
     })
@@ -337,14 +346,14 @@ RegisterServerEvent('gcPhone:deleteMessageNumber')
 AddEventHandler('gcPhone:deleteMessageNumber', function(number)
     local sourcePlayer = tonumber(source)
     local identifier = getPlayerID(sourcePlayer)
-    deleteAllMessageFromPhoneNumber(sourcePlayer,identifier, number)
+    deleteAllMessageFromPhoneNumber(sourcePlayer,identifier.PlayerData.steam, number)
 end)
 
 RegisterServerEvent('gcPhone:deleteAllMessage')
 AddEventHandler('gcPhone:deleteAllMessage', function()
     local sourcePlayer = tonumber(source)
     local identifier = getPlayerID(sourcePlayer)
-    deleteAllMessage(identifier)
+    deleteAllMessage(identifier.PlayerData.steam)
 end)
 
 RegisterServerEvent('gcPhone:setReadMessageNumber')
@@ -358,9 +367,9 @@ RegisterServerEvent('gcPhone:deleteALL')
 AddEventHandler('gcPhone:deleteALL', function()
     local sourcePlayer = tonumber(source)
     local identifier = getPlayerID(sourcePlayer)
-    deleteAllMessage(identifier)
-    deleteAllContact(identifier)
-    appelsDeleteAllHistorique(identifier)
+    deleteAllMessage(identifier.PlayerData.steam)
+    deleteAllContact(identifier.PlayerData.steam)
+    appelsDeleteAllHistorique(identifier.PlayerData.steam)
     TriggerClientEvent("gcPhone:contactList", sourcePlayer, {})
     TriggerClientEvent("gcPhone:allMessage", sourcePlayer, {})
     TriggerClientEvent("appelsDeleteAllHistorique", sourcePlayer, {})
@@ -422,7 +431,7 @@ RegisterServerEvent('gcPhone:getHistoriqueCall')
 AddEventHandler('gcPhone:getHistoriqueCall', function()
     local sourcePlayer = tonumber(source)
     local srcIdentifier = getPlayerID(sourcePlayer)
-    local srcPhone = getNumberPhone(srcIdentifier)
+    local srcPhone = srcIdentifier.PlayerData.charinfo.phone
     sendHistoriqueCall(sourcePlayer, num)
 end)
 
@@ -454,10 +463,10 @@ AddEventHandler('gcPhone:internal_startCall', function(source, phone_number, rtc
     if extraData ~= nil and extraData.useNumber ~= nil then
         srcPhone = extraData.useNumber
     else
-        srcPhone = getNumberPhone(srcIdentifier)
+        srcPhone = srcIdentifier.PlayerData.charinfo.phone
     end
     local destPlayer = getIdentifierByPhoneNumber(phone_number)
-    local is_valid = destPlayer ~= nil and destPlayer ~= srcIdentifier
+    local is_valid = destPlayer ~= nil and destPlayer ~= srcIdentifier.PlayerData.steam
     AppelsEnCours[indexCall] = {
         id = indexCall,
         transmitter_src = sourcePlayer,
@@ -556,7 +565,7 @@ RegisterServerEvent('gcPhone:appelsDeleteHistorique')
 AddEventHandler('gcPhone:appelsDeleteHistorique', function (numero)
     local sourcePlayer = tonumber(source)
     local srcIdentifier = getPlayerID(sourcePlayer)
-    local srcPhone = getNumberPhone(srcIdentifier)
+    local srcPhone = srcIdentifier.PlayerData.charinfo.phone
     MySQL.Async.execute("DELETE FROM phone_calls WHERE `owner` = @owner AND `num` = @num", {
         ['@owner'] = srcPhone,
         ['@num'] = numero
@@ -564,7 +573,7 @@ AddEventHandler('gcPhone:appelsDeleteHistorique', function (numero)
 end)
 
 function appelsDeleteAllHistorique(srcIdentifier)
-    local srcPhone = getNumberPhone(srcIdentifier)
+    local srcPhone = srcIdentifier.PlayerData.charinfo.phone
     MySQL.Async.execute("DELETE FROM phone_calls WHERE `owner` = @owner", {
         ['@owner'] = srcPhone
     })
@@ -574,7 +583,7 @@ RegisterServerEvent('gcPhone:appelsDeleteAllHistorique')
 AddEventHandler('gcPhone:appelsDeleteAllHistorique', function ()
     local sourcePlayer = tonumber(source)
     local srcIdentifier = getPlayerID(sourcePlayer)
-    appelsDeleteAllHistorique(srcIdentifier)
+    appelsDeleteAllHistorique(srcIdentifier.PlayerData.steam)
 end)
 
 
@@ -603,7 +612,7 @@ function onCallFixePhone (source, phone_number, rtcOffer, extraData)
     if extraData ~= nil and extraData.useNumber ~= nil then
         srcPhone = extraData.useNumber
     else
-        srcPhone = getNumberPhone(srcIdentifier)
+        srcPhone = srcIdentifier.PlayerData.charinfo.phone
     end
 
     AppelsEnCours[indexCall] = {

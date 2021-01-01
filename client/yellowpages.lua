@@ -1,5 +1,6 @@
 RegisterNetEvent("gcPhone:yellow_getPosts")
 AddEventHandler("gcPhone:yellow_getPosts", function(posts)
+--  print(posts)
   SendNUIMessage({event = 'yellow_posts', posts = posts})
 end)
 
