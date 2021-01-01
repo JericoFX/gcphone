@@ -1,11 +1,26 @@
 local PlayerData = {}
 local wait = 1000
 local newsMenu = Config.newsBlip
-
+PlayerJob = {}
 --[[ RegisterNetEvent('RSCore:setJob')
 AddEventHandler('RSCore:setJob', function(job)
     PlayerData.job = job
 end) ]]
+RegisterNetEvent('RSCore:Client:OnPlayerLoaded')
+AddEventHandler('RSCore:Client:OnPlayerLoaded', function()
+
+    PlayerJob = RSCore.Functions.GetPlayerData().job
+  
+
+    
+end)
+
+RegisterNetEvent('RSCore:Client:OnJobUpdate')
+AddEventHandler('RSCore:Client:OnJobUpdate', function(JobInfo)
+
+    PlayerJob = JobInfo
+
+end)
 
 Citizen.CreateThread(function()
 
@@ -77,7 +92,24 @@ Citizen.CreateThread(function()
 end)
 
 function newNews()
-    RSCore.UI.Menu.Open('dialog', GetCurrentResourceName(), 'news_name',
+--[[ local dialog1 = LocalInput("news",30, _U('news_title'))
+
+if dialog1 ~= nil or dialog1 ~= "" or diaglo1 ~= 0 then
+    local dialog2 = LocalInput("news",60, _U('news_content'))
+    if dialog2 ~= nil or dialog2 ~= "" or diaglo2 ~= 0 then
+        local dialog3 = LocalInput("news",30, _U('news_img'))
+        if dialog3 ~= nil or dialog3 ~= "" or diaglo3 ~= 0 then
+            local dialog4 = LocalInput("news",30, _U('news_video'))
+        if dialog4 ~= nil or dialog4 ~= "" or dialog4 ~= 0 then
+            TriggerServerEvent("crew-phone:new-news", dialog1, dialog2, dialog3, dialog4)
+        else
+            TriggerServerEvent("crew-phone:new-news", dialog1, dialog2, dialog3, "")
+        end
+    end
+    end
+end ]]
+
+    --[[ RSCore.UI.Menu.Open('dialog', GetCurrentResourceName(), 'news_name',
     {
         title = _U('news_title')
     },
@@ -129,10 +161,36 @@ function newNews()
         end
     end, function(data, menu)
         menu.close()
-    end)
+    end) ]]
+end
+function LocalInput(text, numeros, windoes) --SHOW ON SCREEN KEYBOARD FOR THE PRICE AND NAME
+    DisplayOnscreenKeyboard(1, text or "FMMC_MPM_NA", "", windoes or "", "", "", "", numeros or 30)
+    while (UpdateOnscreenKeyboard() == 0) do
+        DisableAllControlActions(0)
+        Wait(0)
+    end
+    if (GetOnscreenKeyboardResult()) then
+        local result = GetOnscreenKeyboardResult()
+        return result
+    end
+end
+function LocalInputInt(text, numeros, windoes) --SHOW ON SCREEN KEYBOARD FOR THE PRICE AND NAME BUT RETURN A NUMBER
+   DisplayOnscreenKeyboard(1, text or "FMMC_MPM_NA", "", windoes or "", "", "", "", numeros or 30)
+   while (UpdateOnscreenKeyboard() == 0) do
+       DisableAllControlActions(0)
+       Wait(0)
+   end
+   if (GetOnscreenKeyboardResult()) then
+       local result = GetOnscreenKeyboardResult()
+       return tonumber(result)
+   end
 end
 
 --[[ Citizen.CreateThread(function()
+
+    
+       
+    
 	local assert = assert
 	local menu = assert(MenuV)
 
@@ -157,7 +215,7 @@ end
 
 
 
-    Manage:OpenWith('keyboard', 'F1')
+    Manage:OpenWith('keyboard', 'F6')
 
 end) ]]
 

@@ -90,7 +90,7 @@ function GoToTarget(x, y, z, vehicle, driver, vehhash, target)
         SetDriverAggressiveness(driver, 0.0)
         TaskVehicleDriveToCoord(driver, vehicle, playerPos.x, playerPos.y, playerPos.z, 20.0, 0, vehhash, 1074528293, 1, true)
         local distanceToTarget = #(playerPos - GetEntityCoords(vehicle))
-        if distanceToTarget < 15 or distanceToTarget > 150 then
+        if distanceToTarget < 15 or distanceToTarget > 600 then
             RemoveBlip(mechBlip)
             TaskVehicleTempAction(driver, vehicle, 27, 6000)
             --SetVehicleUndriveable(vehicle, true)
