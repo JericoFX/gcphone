@@ -1,10 +1,38 @@
+RSCore.Functions.CreateCallback("gcPhone:getCarsByPlate", function(a, b,plate)
+    local c = RSCore.Functions.GetPlayer(a)
+   -- print(plate)
+    MySQL.Async.fetchAll("SELECT hash FROM player_vehicles WHERE plate = @cid", {["@cid"] = plate}, function(d)
+        --print(d.plate)
+       -- print(plate)
+       -- tprint(d[1])
+        if d[1] ~= nil then
+           -- print("PLATE FROM CAR "..d[1].vehicle)
 
+        b(d[1].hash)
+        end
+    end)
+end)
+
+function tprint (tbl, indent)
+    if not indent then indent = 0 end
+    for k, v in pairs(tbl) do
+      formatting = string.rep("  ", indent) .. k .. ": "
+      if type(v) == "table" then
+        print(formatting)
+        tprint(v, indent+1)
+      elseif type(v) == 'boolean' then
+        print(formatting .. tostring(v))      
+      else
+        print(formatting .. v)
+      end
+    end
+  end
 RSCore.Functions.CreateCallback("gcPhone:getCars", function(a, b)
     local c = RSCore.Functions.GetPlayer(a)
     MySQL.Async.fetchAll("SELECT * FROM player_vehicles WHERE steam = @cid", {["@cid"] = c.PlayerData.steam}, function(d)
         print(d.plate)
         local e = {} for f, g in ipairs(d) do
-            table.insert(e, {["garage"] = g["state"], ["plate"] = g["plate"], ["props"] = json.decode(g["mods"])})
+            table.insert(e, {["garage"] = g["state"], ["plate"] = g["plate"], ["props"] = json.decode(g["mods"]),["vehicle"]= g["vehicle"]})
         end;
         b(e)
     end)
