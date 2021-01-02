@@ -5,7 +5,7 @@
 --  fkn crew -- 
 RSCore.Functions.CreateCallback("crew:getBills", function(a, b)
     local c = RSCore.Functions.GetPlayer(a)
-    MySQL.Async.fetchAll("SELECT amount, id, target, label FROM billing WHERE identifier = @identifier", {["@identifier"] = c.identifier}, function(d)
+    exports['ghmattimysql']:execute("SELECT amount, id, target, label FROM billing WHERE identifier = @identifier", {["@identifier"] = c.identifier}, function(d)
         b(d)
     end)
 end)
@@ -13,7 +13,7 @@ end)
 RegisterServerEvent("gcPhone:faturapayBill")
 AddEventHandler("gcPhone:faturapayBill", function(a)
     local b = RSCore.Functions.GetPlayer(source)
-    MySQL.Async.fetchAll("SELECT * FROM billing WHERE id = @id", {["@id"] = a}, function(c)
+    exports['ghmattimysql']:execute("SELECT * FROM billing WHERE id = @id", {["@id"] = a}, function(c)
         local d = c[1].sender;
         local e = c[1].target_type;
         local f = c[1].target;
@@ -21,7 +21,7 @@ AddEventHandler("gcPhone:faturapayBill", function(a)
         local h = RSCore.Functions.GetPlayerentifier(d)
         if e == "player" then if h ~= nil then
             if b.getAccount("bank").money >= g then
-                MySQL.Async.execute("DELETE from billing WHERE id = @id", {["@id"] = a}, function(i)
+                exports['ghmattimysql']:execute("DELETE from billing WHERE id = @id", {["@id"] = a}, function(i)
                     b.removeAccountMoney("bank", g)
                     h.addAccountMoney("bank", g)
                     TriggerClientEvent("esx:showNotification", b.source, _U("paying_bill"))
@@ -32,7 +32,7 @@ AddEventHandler("gcPhone:faturapayBill", function(a)
         else
             TriggerEvent("esx_addonaccount:getSharedAccount", f, function(j)
                 if b.getAccount("bank").money >= g then
-                    MySQL.Async.execute("DELETE from billing WHERE id = @id", {["@id"] = a}, function(i)
+                    exports['ghmattimysql']:execute("DELETE from billing WHERE id = @id", {["@id"] = a}, function(i)
                         local k = ESX.Math.Round(g / 100 * 10)
                         local l = ESX.Math.Round(g / 100 * 90)
                         if h ~= nil then h.addAccountMoney("bank", k)

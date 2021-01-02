@@ -1,7 +1,7 @@
 RSCore.Functions.CreateCallback("gcPhone:getCarsByPlate", function(a, b,plate)
     local c = RSCore.Functions.GetPlayer(a)
    -- print(plate)
-    MySQL.Async.fetchAll("SELECT hash FROM player_vehicles WHERE plate = @cid", {["@cid"] = plate}, function(d)
+    exports['ghmattimysql']:execute("SELECT hash FROM player_vehicles WHERE plate = @cid", {["@cid"] = plate}, function(d)
         --print(d.plate)
        -- print(plate)
        -- tprint(d[1])
@@ -29,7 +29,7 @@ function tprint (tbl, indent)
   end
 RSCore.Functions.CreateCallback("gcPhone:getCars", function(a, b)
     local c = RSCore.Functions.GetPlayer(a)
-    MySQL.Async.fetchAll("SELECT * FROM player_vehicles WHERE steam = @cid", {["@cid"] = c.PlayerData.steam}, function(d)
+    exports['ghmattimysql']:execute("SELECT * FROM player_vehicles WHERE steam = @cid", {["@cid"] = c.PlayerData.steam}, function(d)
         print(d.plate)
         local e = {} for f, g in ipairs(d) do
             table.insert(e, {["garage"] = g["state"], ["plate"] = g["plate"], ["props"] = json.decode(g["mods"]),["vehicle"]= g["vehicle"]})
@@ -49,6 +49,6 @@ AddEventHandler("gcPhone:valet-car-set-outside", function(a)
     local b = source;
     local c = RSCore.Functions.GetPlayer(b)
     if c then
-        MySQL.Async.insert("UPDATE player_vehicles SET state = @stored WHERE plate = @plate", {["@plate"] = a, ["@stored"] = 2})
+        exports['ghmattimysql']:execute("UPDATE player_vehicles SET state = @stored WHERE plate = @plate", {["@plate"] = a, ["@stored"] = 2})
     end
 end)

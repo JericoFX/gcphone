@@ -8,7 +8,7 @@ RSCore.Functions.CreateCallback("gcPhone:getCrypto",function(a,b,c)
     if not d then 
         return 
     end;
-    MySQL.Async.fetchAll("SELECT crypto FROM users WHERE identifier = @identifier",{["@identifier"]=d.identifier},function(e)
+    exports['ghmattimysql']:execute("SELECT crypto FROM users WHERE identifier = @identifier",{["@identifier"]=d.identifier},function(e)
         b(json.decode(e[1].crypto)[c])
     end)
 end)
@@ -21,7 +21,7 @@ AddEventHandler("gcPhone:buyCrypto",function(a,b,c,d)
          return 
         end;
          local g={}
-         MySQL.Async.fetchAll("SELECT crypto FROM users WHERE identifier = @identifier",{["@identifier"]=e.identifier},function(h)
+         exports['ghmattimysql']:execute("SELECT crypto FROM users WHERE identifier = @identifier",{["@identifier"]=e.identifier},function(h)
             if f<0 then f=f*-1 
             end;
             g=json.decode(h[1].crypto)
@@ -42,6 +42,6 @@ AddEventHandler("gcPhone:buyCrypto",function(a,b,c,d)
             else print("phone coin error because SOB LilBecha"..e.identifier)
                 return 
             end;
-            MySQL.Async.fetchAll("UPDATE users SET crypto = @crypto WHERE identifier = @identifier",{["@identifier"]=e.identifier,["@crypto"]=json.encode(g)})
+            exports['ghmattimysql']:execute("UPDATE users SET crypto = @crypto WHERE identifier = @identifier",{["@identifier"]=e.identifier,["@crypto"]=json.encode(g)})
         end)
     end)

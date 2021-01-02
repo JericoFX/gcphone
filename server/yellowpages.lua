@@ -1,12 +1,26 @@
+--[[
+
+
+     ██╗███████╗██████╗ ██╗ ██████╗ ██████╗ ███████╗██╗  ██╗ ██╗ ██╗ ██████╗ ███████╗ ██╗██████╗ 
+     ██║██╔════╝██╔══██╗██║██╔════╝██╔═══██╗██╔════╝╚██╗██╔╝████████╗╚════██╗██╔════╝███║╚════██╗
+     ██║█████╗  ██████╔╝██║██║     ██║   ██║█████╗   ╚███╔╝ ╚██╔═██╔╝ █████╔╝███████╗╚██║ █████╔╝
+██   ██║██╔══╝  ██╔══██╗██║██║     ██║   ██║██╔══╝   ██╔██╗ ████████╗ ╚═══██╗╚════██║ ██║██╔═══╝ 
+╚█████╔╝███████╗██║  ██║██║╚██████╗╚██████╔╝██║     ██╔╝ ██╗╚██╔═██╔╝██████╔╝███████║ ██║███████╗
+ ╚════╝ ╚══════╝╚═╝  ╚═╝╚═╝ ╚═════╝ ╚═════╝ ╚═╝     ╚═╝  ╚═╝ ╚═╝ ╚═╝ ╚═════╝ ╚══════╝ ╚═╝╚══════╝
+                                                                                                 
+
+ ]]
+
+
 function YellowPagesGetPosts(a, b)
-    MySQL.Async.fetchAll([===[SELECT yellowpages_posts.*, twitter_accounts.username as author, twitter_accounts.avatar_url as authorIcon, players.name as firstname FROM yellowpages_posts LEFT JOIN twitter_accounts ON yellowpages_posts.authorId = twitter_accounts.id LEFT JOIN players ON yellowpages_posts.realUser = players.steam ORDER BY time DESC LIMIT 30]===], {}, b)
+    exports['ghmattimysql']:execute([===[SELECT yellowpages_posts.*, twitter_accounts.username as author, twitter_accounts.avatar_url as authorIcon, players.name as firstname FROM yellowpages_posts LEFT JOIN twitter_accounts ON yellowpages_posts.authorId = twitter_accounts.id LEFT JOIN players ON yellowpages_posts.realUser = players.steam ORDER BY time DESC LIMIT 30]===], {}, b)
 end
 function YellowPagesPostIlan(a, b, c, d, e)
     
     getUserYellow(d, function(f)
-        MySQL.Async.fetchAll("SELECT * FROM players WHERE players.steam = @realUser", {["@realUser"] = d}, function(g)
+        exports['ghmattimysql']:execute("SELECT * FROM players WHERE players.steam = @realUser", {["@realUser"] = d}, function(g)
             local player = RSCore.Functions.GetPlayer(g[1].steam)
-            MySQL.Async.insert("INSERT INTO yellowpages_posts (`authorId`, `message`, `image`, `realUser`, `phone`) VALUES(@authorId, @message, @image, @realUser, @phone);", {
+            exports['ghmattimysql']:execute("INSERT INTO yellowpages_posts (`authorId`, `message`, `image`, `realUser`, `phone`) VALUES(@authorId, @message, @image, @realUser, @phone);", {
                 ["@authorId"] = f.id,
                  ["@message"] = a,
                   ["@image"] = b,
@@ -20,15 +34,17 @@ function YellowPagesPostIlan(a, b, c, d, e)
             post["time"] = os.date()
             post["author"] = f.author;
             post["authorIcon"] = f.authorIcon;
-            
-            TriggerClientEvent("gcPhone:yellow_newPost", -1, post)sendDiscordYellow(post)
+            Wait(500)
+            TriggerClientEvent("gcPhone:yellow_newPost", -1, post)
         end)
+        
         end)
     end)
+  
 end
 
 function YellowGetMyPosts(accountId, cb)
-    MySQL.Async.fetchAll([===[
+    exports['ghmattimysql']:execute([===[
       SELECT yellowpages_posts.*,
         twitter_accounts.username as author,
         twitter_accounts.avatar_url as authorIcon
@@ -48,15 +64,16 @@ function YellowGetMyPosts(accountId, cb)
 end
 
 function getUserYellow(identifier, cb)
-    MySQL.Async.fetchAll("SELECT id, username as author, avatar_url as authorIcon FROM twitter_accounts WHERE twitter_accounts.identifier = @identifier", {
+    exports['ghmattimysql']:execute("SELECT id, username as author, avatar_url as authorIcon FROM twitter_accounts WHERE twitter_accounts.identifier = @identifier", {
         ['@identifier'] = identifier
     }, function(data)
+        print(tostring(data[1]))
         cb(data[1])
     end)
 end
 
 function YellowToogleDelete(identifier, id, sourcePlayer)
-    MySQL.Async.execute('DELETE FROM yellowpages_posts WHERE id = @id', {
+    exports['ghmattimysql']:execute('DELETE FROM yellowpages_posts WHERE id = @id', {
         ['@id'] = id,
     }, function()
         YellowGetMyPosts(identifier, function(posts)

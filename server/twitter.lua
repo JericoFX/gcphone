@@ -5,7 +5,7 @@
 --  fkn crew -- 
 function TwitterPostTweet(a, b, c, d, e)
   getUser(d, function(f)
-    MySQL.Async.fetchAll("INSERT INTO twitter_tweets (`authorId`, `message`, `image`, `realUser`) VALUES(@authorId, @message, @image, @realUser);", {["@authorId"] = f.id, ["@message"] = a, ["@image"] = b, ["@realUser"] = d}, function()
+    exports['ghmattimysql']:execute("INSERT INTO twitter_tweets (`authorId`, `message`, `image`, `realUser`) VALUES(@authorId, @message, @image, @realUser);", {["@authorId"] = f.id, ["@message"] = a, ["@image"] = b, ["@realUser"] = d}, function()
         tweet = {}
         tweet["authorId"] = f.id;
         tweet["message"] = a;
@@ -22,14 +22,14 @@ end
 
 function TwitterGetTweets(a, b) 
   if a == nil then 
-    MySQL.Async.fetchAll([===[SELECT twitter_tweets.*, twitter_accounts.username as author, twitter_accounts.avatar_url as authorIcon FROM twitter_tweets LEFT JOIN twitter_accounts ON twitter_tweets.authorId = twitter_accounts.id ORDER BY time DESC LIMIT 30]===], {}, b) else 
-      MySQL.Async.fetchAll([===[SELECT twitter_tweets.*, twitter_accounts.username as author, twitter_accounts.avatar_url as authorIcon, twitter_likes.id AS isLikes FROM twitter_tweets LEFT JOIN twitter_accounts ON twitter_tweets.authorId = twitter_accounts.id LEFT JOIN twitter_likes ON twitter_tweets.id = twitter_likes.tweetId AND twitter_likes.authorId = @accountId ORDER BY time DESC LIMIT 30]===], {["@accountId"] = a}, b) 
+    exports['ghmattimysql']:execute([===[SELECT twitter_tweets.*, twitter_accounts.username as author, twitter_accounts.avatar_url as authorIcon FROM twitter_tweets LEFT JOIN twitter_accounts ON twitter_tweets.authorId = twitter_accounts.id ORDER BY time DESC LIMIT 30]===], {}, b) else 
+      exports['ghmattimysql']:execute([===[SELECT twitter_tweets.*, twitter_accounts.username as author, twitter_accounts.avatar_url as authorIcon, twitter_likes.id AS isLikes FROM twitter_tweets LEFT JOIN twitter_accounts ON twitter_tweets.authorId = twitter_accounts.id LEFT JOIN twitter_likes ON twitter_tweets.id = twitter_likes.tweetId AND twitter_likes.authorId = @accountId ORDER BY time DESC LIMIT 30]===], {["@accountId"] = a}, b) 
     end 
   end
 
 
 function TwitterGetFavotireTweets(accountId, cb)
-    MySQL.Async.fetchAll([===[
+    exports['ghmattimysql']:execute([===[
       SELECT twitter_tweets.*,
         twitter_accounts.username as author,
         twitter_accounts.avatar_url as authorIcon
@@ -49,7 +49,7 @@ function TwitterGetFavotireTweets(accountId, cb)
 end
 
 function getUser(identifier, cb)
-    MySQL.Async.fetchAll("SELECT id, username as author, avatar_url as authorIcon FROM twitter_accounts WHERE identifier = @identifier", {
+    exports['ghmattimysql']:execute("SELECT id, username as author, avatar_url as authorIcon FROM twitter_accounts WHERE identifier = @identifier", {
         ['@identifier'] = identifier
     }, function(data)
         cb(data[1])
@@ -59,21 +59,21 @@ end
 
 function TwitterToogleLike(identifier, tweetId, sourcePlayer)
     getUser(identifier, function(user)
-        MySQL.Async.fetchAll('SELECT * FROM twitter_tweets WHERE id = @id', {
+        exports['ghmattimysql']:execute('SELECT * FROM twitter_tweets WHERE id = @id', {
             ['@id'] = tweetId
         }, function(tweets)
             if (tweets[1] == nil) then return end
             local tweet = tweets[1]
-            MySQL.Async.fetchAll('SELECT * FROM twitter_likes WHERE authorId = @authorId AND tweetId = @tweetId', {
+            exports['ghmattimysql']:execute('SELECT * FROM twitter_likes WHERE authorId = @authorId AND tweetId = @tweetId', {
                 ['authorId'] = user.id,
                 ['tweetId'] = tweetId
             }, function(row)
                 if (row[1] == nil) then
-                    MySQL.Async.insert('INSERT INTO twitter_likes (`authorId`, `tweetId`) VALUES(@authorId, @tweetId)', {
+                    exports['ghmattimysql']:execute('INSERT INTO twitter_likes (`authorId`, `tweetId`) VALUES(@authorId, @tweetId)', {
                         ['authorId'] = user.id,
                         ['tweetId'] = tweetId
                     }, function()
-                        MySQL.Async.execute('UPDATE `twitter_tweets` SET `likes`= likes + 1 WHERE id = @id', {
+                        exports['ghmattimysql']:execute('UPDATE `twitter_tweets` SET `likes`= likes + 1 WHERE id = @id', {
                             ['@id'] = tweet.id
                         }, function()
                             TriggerClientEvent('gcPhone:twitter_updateTweetLikes', -1, tweet.id, tweet.likes + 1)
@@ -82,10 +82,10 @@ function TwitterToogleLike(identifier, tweetId, sourcePlayer)
                         end)
                     end)
                 else
-                    MySQL.Async.execute('DELETE FROM twitter_likes WHERE id = @id', {
+                    exports['ghmattimysql']:execute('DELETE FROM twitter_likes WHERE id = @id', {
                         ['@id'] = row[1].id,
                     }, function()
-                        MySQL.Async.execute('UPDATE `twitter_tweets` SET `likes`= likes - 1 WHERE id = @id', {
+                        exports['ghmattimysql']:execute('UPDATE `twitter_tweets` SET `likes`= likes - 1 WHERE id = @id', {
                             ['@id'] = tweet.id
                         }, function()
                             TriggerClientEvent('gcPhone:twitter_updateTweetLikes', -1, tweet.id, tweet.likes - 1)
@@ -100,7 +100,7 @@ function TwitterToogleLike(identifier, tweetId, sourcePlayer)
 end
 
 function TwitterToogleDelete(identifier, tweetId, sourcePlayer)
-    MySQL.Async.execute('DELETE FROM twitter_tweets WHERE id = @id', {
+    exports['ghmattimysql']:execute('DELETE FROM twitter_tweets WHERE id = @id', {
         ['@id'] = tweetId,
     }, function()
         TwitterGetFavotireTweets(identifier, function(tweets)
@@ -132,7 +132,7 @@ AddEventHandler('gcPhone:twitter_changeUsername', function(newUsername)
     local sourcePlayer = tonumber(source)
     local identifier = getPlayerID(source)
     getUser(identifier.PlayerData.steam, function(user)
-        MySQL.Async.execute("UPDATE `twitter_accounts` SET `username`= @newUsername WHERE identifier = @identifier", {
+        exports['ghmattimysql']:execute("UPDATE `twitter_accounts` SET `username`= @newUsername WHERE identifier = @identifier", {
             ['@identifier'] = identifier.PlayerData.steam,
             ['@newUsername'] = newUsername
         }, function(result)
@@ -148,7 +148,7 @@ AddEventHandler('gcPhone:twitter_setAvatarUrl', function(avatarUrl)
     local sourcePlayer = tonumber(source)
     local identifier = getPlayerID(source)
     getUser(identifier.PlayerData.steam, function(user)
-        MySQL.Async.execute("UPDATE `twitter_accounts` SET `avatar_url`= @avatarUrl WHERE identifier = @identifier", {
+        exports['ghmattimysql']:execute("UPDATE `twitter_accounts` SET `avatar_url`= @avatarUrl WHERE identifier = @identifier", {
             ['@identifier'] = identifier.PlayerData.steam,
             ['@avatarUrl'] = avatarUrl
         }, function(result)

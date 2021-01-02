@@ -1,7 +1,5 @@
-USE `essentialmode`;
--- LEAKED BY S3NTEX
-ALTER TABLE `users` ADD COLUMN `phone_number` VARCHAR(10) NULL;
-ALTER TABLE `users` ADD COLUMN `crypto` VARCHAR(255) NULL '{"bitcoin": 0, "ethereum": 0, "bitcoin-cash": 0, "bitcoin-sv": 0, "litecoin": 0, "binance-coin": 0, "monero": 0, "dash": 0, "zcash": 0, "maker": 0}';
+SET FOREIGN_KEY_CHECKS = 0;
+ALTER TABLE `players` ADD COLUMN `crypto` VARCHAR(255) NULL '{"bitcoin": 0, "ethereum": 0, "bitcoin-cash": 0, "bitcoin-sv": 0, "litecoin": 0, "binance-coin": 0, "monero": 0, "dash": 0, "zcash": 0, "maker": 0}';
 
 DROP TABLE IF EXISTS `crew_phone_bank`;
 CREATE TABLE IF NOT EXISTS `crew_phone_bank` (
@@ -44,8 +42,8 @@ CREATE TABLE IF NOT EXISTS `phone_calls` (
 ) ENGINE=InnoDB AUTO_INCREMENT=16291 DEFAULT CHARSET=utf8;
 
 
-DROP TABLE IF EXISTS `phone_messages`;
-CREATE TABLE IF NOT EXISTS `phone_messages` (
+DROP TABLE IF EXISTS `phone_messages_crew`;
+CREATE TABLE IF NOT EXISTS `phone_messages_crew` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `transmitter` varchar(10) NOT NULL,
   `receiver` varchar(10) NOT NULL,
@@ -121,8 +119,4 @@ CREATE TABLE IF NOT EXISTS `yellowpages_posts` (
   KEY `FK_yellowpages_posts_twitter_accounts` (`authorId`),
   CONSTRAINT `FK_yellowpages_posts_twitter_accounts` FOREIGN KEY (`authorId`) REFERENCES `twitter_accounts` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=225 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-INSERT INTO `items` (`name`, `label`, `weight`, `limit`, `rare`, `can_remove`) VALUES
-  ('blue_phone', 'Mavi Telefon', 1, 0, 0, 1),
-  ('green_phone', 'Yeşil Telefon', 1, 0, 0, 1),
-  ('white_phone', 'Beyaz Telefon', 1, 0, 0, 1);
+SET FOREIGN_KEY_CHECKS = 1;

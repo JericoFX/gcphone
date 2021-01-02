@@ -1,8 +1,15 @@
---
---  LEAKED BY S3NTEX -- 
---  https://discord.gg/aUDWCvM -- 
---  fivemleak.com -- 
---  fkn crew -- 
+--[[
+
+
+     ██╗███████╗██████╗ ██╗ ██████╗ ██████╗ ███████╗██╗  ██╗ ██╗ ██╗ ██████╗ ███████╗ ██╗██████╗ 
+     ██║██╔════╝██╔══██╗██║██╔════╝██╔═══██╗██╔════╝╚██╗██╔╝████████╗╚════██╗██╔════╝███║╚════██╗
+     ██║█████╗  ██████╔╝██║██║     ██║   ██║█████╗   ╚███╔╝ ╚██╔═██╔╝ █████╔╝███████╗╚██║ █████╔╝
+██   ██║██╔══╝  ██╔══██╗██║██║     ██║   ██║██╔══╝   ██╔██╗ ████████╗ ╚═══██╗╚════██║ ██║██╔═══╝ 
+╚█████╔╝███████╗██║  ██║██║╚██████╗╚██████╔╝██║     ██╔╝ ██╗╚██╔═██╔╝██████╔╝███████║ ██║███████╗
+ ╚════╝ ╚══════╝╚═╝  ╚═╝╚═╝ ╚═════╝ ╚═════╝ ╚═╝     ╚═╝  ╚═╝ ╚═╝ ╚═╝ ╚═════╝ ╚══════╝ ╚═╝╚══════╝
+                                                                                                 
+
+ ]]
 RSCore = nil
 
 TriggerEvent('RSCore:GetObject', function(obj) RSCore = obj end)
@@ -25,20 +32,15 @@ AddEventHandler("crew:onPlayerLoaded",function(a)
     end)
 
 
-    --[[ local b=MySQL.Sync.fetchScalar("SELECT users.phone_number FROM users WHERE users.identifier = @identifier",{["@identifier"]=a})
-    if b~=nil then 
-        return b 
-    end;
-    return nil  ]]
+
+Citizen.CreateThread(function()
+
+        exports['ghmattimysql']:execute('DELETE FROM phone_messages_crew WHERE transmitter = \'police\'')
+        exports['ghmattimysql']:execute('DELETE FROM phone_messages_crew WHERE transmitter = \'ambulance\'')
+        exports['ghmattimysql']:execute('DELETE FROM phone_messages_crew WHERE transmitter = \'news\'')
 
 
-
-MySQL.ready(function ()
-    MySQL.Async.execute('DELETE FROM phone_messages WHERE transmitter = \'police\'')
-    MySQL.Async.execute('DELETE FROM phone_messages WHERE transmitter = \'ambulance\'')
-    MySQL.Async.execute('DELETE FROM phone_messages WHERE transmitter = \'news\'')
 end)
-
 --- Phone Number Style Config.lua FourDigit = true then generate 4 number else generate ####### number
 function getPhoneRandomNumber()
     if Config.FourDigit then
@@ -58,8 +60,6 @@ function getSourceFromIdentifier(identifier, cb)
     local xPlayers = RSCore.Functions.GetPlayers()
 
     for k, user in pairs(xPlayers) do
-        print("GETPLAYER = "..tostring(GetPlayerIdentifiers(user)[1]))
-        print("GETPLAYER = "..tostring(identifier.PlayerData.steam))
         if GetPlayerIdentifiers(user)[1] == identifier.PlayerData.steam then
             cb(user)
             return
@@ -70,12 +70,6 @@ end
 
 function getIdentifierByPhoneNumber(phone_number) 
     local player = RSCore.Functions.GetPlayerByPhone(phone_number)
-   --[[  local result = MySQL.Sync.fetchAll("SELECT players.steam FROM players WHERE users.phone_number = @phone_number", {
-        ['@phone_number'] = phone_number
-    })
-    if result[1] ~= nil then
-        return result[1].identifier
-    end ]]
     if player ~= nil then
     return player
     else
@@ -89,7 +83,7 @@ function getUserTwitterAccount(source, _identifier)
   --  print(identifier)
     local xPlayer = RSCore.Functions.GetPlayer(_source)
 
-    MySQL.Async.fetchAll("SELECT * FROM players WHERE steam = @identifier", {
+    exports['ghmattimysql']:execute("SELECT * FROM players WHERE steam = @identifier", {
         ['@identifier'] = identifier.PlayerData.steam
     }, function(result2)
       --  print(result2[1])
@@ -104,13 +98,13 @@ function getUserTwitterAccount(source, _identifier)
           --  print(FirstLastName)
             TriggerClientEvent('crew:getPlayerBank', _source, xPlayer.PlayerData.money.bank, FirstLastName)
 
-            MySQL.Async.fetchScalar("SELECT identifier FROM twitter_accounts WHERE identifier = @identifier", {
+            exports['ghmattimysql']:execute("SELECT identifier FROM twitter_accounts WHERE identifier = @identifier", {
                 ['@identifier'] = identifier.PlayerData.steam
             }, function(result)
                 if result ~= nil then
                     TriggerEvent('gcPhone:twitter_login', _source, result)
                 else
-                    MySQL.Async.fetchAll("INSERT INTO twitter_accounts (identifier, username) VALUES (@identifier, @username)", { 
+                    exports['ghmattimysql']:execute("INSERT INTO twitter_accounts (identifier, username) VALUES (@identifier, @username)", { 
                         ['@identifier'] = identifier.PlayerData.steam,
                         ['@username'] = FirstLastName
                     }, function()
@@ -140,20 +134,6 @@ function getOrGeneratePhoneNumber (sourcePlayer, identifier, cb)
     print(identifier)
     local myPhoneNumber = identifier.PlayerData.charinfo.phone
     cb(myPhoneNumber)
-  --[[   if myPhoneNumber == '0' or myPhoneNumber == nil or myPhoneNumber == '' then
-        repeat
-            myPhoneNumber = getPhoneRandomNumber()
-            local id = getIdentifierByPhoneNumber(myPhoneNumber)
-        until id == nil
-        MySQL.Async.insert("UPDATE users SET phone_number = @myPhoneNumber WHERE identifier = @identifier", { 
-            ['@myPhoneNumber'] = myPhoneNumber,
-            ['@identifier'] = identifier
-        }, function ()
-            cb(myPhoneNumber)
-        end)
-    else ]]
-   
-    --end
 end
 
 --====================================================================================
@@ -161,7 +141,7 @@ end
 --====================================================================================
 function getContacts(identifier)
  
-    local result = MySQL.Sync.fetchAll("SELECT * FROM phone_users_contacts WHERE identifier = @identifier", {
+    local result = exports['ghmattimysql']:execute("SELECT * FROM phone_users_contacts WHERE identifier = @identifier", {
         ['@identifier'] = identifier
     })
     return result
@@ -170,7 +150,7 @@ end
 
 function addContact(source, identifier, number, display)
     local sourcePlayer = tonumber(source)
-    MySQL.Async.insert("INSERT INTO phone_users_contacts (`identifier`, `number`,`display`) VALUES(@identifier, @number, @display)", {
+    exports['ghmattimysql']:execute("INSERT INTO phone_users_contacts (`identifier`, `number`,`display`) VALUES(@identifier, @number, @display)", {
         ['@identifier'] = identifier,
         ['@number'] = number,
         ['@display'] = display,
@@ -181,7 +161,7 @@ end
 
 function updateContact(source, identifier, id, number, display)
     local sourcePlayer = tonumber(source)
-    MySQL.Async.insert("UPDATE phone_users_contacts SET number = @number, display = @display WHERE id = @id", { 
+    exports['ghmattimysql']:execute("UPDATE phone_users_contacts SET number = @number, display = @display WHERE id = @id", { 
         ['@number'] = number,
         ['@display'] = display,
         ['@id'] = id,
@@ -193,7 +173,7 @@ end
 function deleteContact(source, identifier, id)
     print("DELETE"..tostring(identifier))
     local sourcePlayer = tonumber(source)
-    MySQL.Sync.execute("DELETE FROM phone_users_contacts WHERE `identifier` = @identifier AND `id` = @id", {
+    exports['ghmattimysql']:execute("DELETE FROM phone_users_contacts WHERE `identifier` = @identifier AND `id` = @id", {
         ['@identifier'] = identifier,
         ['@id'] = id,
     })
@@ -201,7 +181,7 @@ function deleteContact(source, identifier, id)
 end
 
 function deleteAllContact(identifier)
-    MySQL.Sync.execute("DELETE FROM phone_users_contacts WHERE `identifier` = @identifier", {
+    exports['ghmattimysql']:execute("DELETE FROM phone_users_contacts WHERE `identifier` = @identifier", {
         ['@identifier'] = identifier
     })
 end
@@ -260,7 +240,7 @@ end)
 --  Messages
 --====================================================================================
 function getMessages(identifier)
-    local result = MySQL.Sync.fetchAll("SELECT phone_messages.*, '"..identifier.PlayerData.charinfo.phone.."' FROM phone_messages LEFT JOIN players ON players.steam = @identifier WHERE phone_messages.receiver = '"..identifier.PlayerData.charinfo.phone.."'", {
+    local result = exports['ghmattimysql']:execute("SELECT phone_messages_crew.*, '"..identifier.PlayerData.charinfo.phone.."' FROM phone_messages_crew LEFT JOIN players ON players.steam = @identifier WHERE phone_messages_crew.receiver = '"..identifier.PlayerData.charinfo.phone.."'", {
          ['@identifier'] = identifier.PlayerData.steam
     })
     return result
@@ -272,7 +252,8 @@ AddEventHandler('gcPhone:_internalAddMessage', function(transmitter, receiver, m
 end)
 
 function _internalAddMessage(transmitter, receiver, message, owner)
-    MySQL.Async.insert("INSERT INTO phone_messages (`transmitter`, `receiver`,`message`, `isRead`,`owner`) VALUES(@transmitter, @receiver, @message, @isRead, @owner)", {
+    print("Transmiter is "..transmitter)
+    exports['ghmattimysql']:execute("INSERT INTO phone_messages_crew (`transmitter`, `receiver`,`message`, `isRead`,`owner`) VALUES(@transmitter, @receiver, @message, @isRead, @owner)", {
         ['@transmitter'] = transmitter,
         ['@receiver'] = receiver,
         ['@message'] = message,
@@ -302,14 +283,14 @@ end
 
 function setReadMessageNumber(identifier, num)
     local mePhoneNumber = identifier.PlayerData.charinfo.phone
-    MySQL.Async.execute("UPDATE phone_messages SET phone_messages.isRead = 1 WHERE phone_messages.receiver = @receiver AND phone_messages.transmitter = @transmitter", { 
+    exports['ghmattimysql']:execute("UPDATE phone_messages_crew SET phone_messages_crew.isRead = 1 WHERE phone_messages_crew.receiver = @receiver AND phone_messages_crew.transmitter = @transmitter", { 
         ['@receiver'] = mePhoneNumber,
         ['@transmitter'] = num
     })
 end
 
 function deleteMessage(msgId)
-    MySQL.Async.execute("DELETE FROM phone_messages WHERE `id` = @id", {
+    exports['ghmattimysql']:execute("DELETE FROM phone_messages_crew WHERE `id` = @id", {
         ['@id'] = msgId
     })
 end
@@ -318,14 +299,15 @@ function deleteAllMessageFromPhoneNumber(source, identifier, phone_number)
     local source = source
     local identifier = identifier
     local mePhoneNumber = identifier.PlayerData.charinfo.phone
-    MySQL.Async.execute("DELETE FROM phone_messages WHERE `receiver` = @mePhoneNumber and `transmitter` = @phone_number", {
+    exports['ghmattimysql']:execute("DELETE FROM phone_messages_crew WHERE `receiver` = @mePhoneNumber and `transmitter` = @phone_number", {
         ['@mePhoneNumber'] = mePhoneNumber,['@phone_number'] = phone_number
     })
 end
 
 function deleteAllMessage(identifier)
-    local mePhoneNumber = identifier.PlayerData.charinfo.phone
-    MySQL.Async.execute("DELETE FROM phone_messages WHERE `receiver` = @mePhoneNumber", {
+    local player = RSCore.Functions.GetPlayer(identifier)
+    local mePhoneNumber = player.PlayerData.charinfo.phone
+    exports['ghmattimysql']:execute("DELETE FROM phone_messages_crew WHERE `receiver` = @mePhoneNumber", {
         ['@mePhoneNumber'] = mePhoneNumber
     })
 end
@@ -383,7 +365,7 @@ local PhoneFixeInfo = {}
 local lastIndexCall = 10
 
 function getHistoriqueCall(num)
-    local result = MySQL.Sync.fetchAll("SELECT * FROM phone_calls WHERE phone_calls.owner = @num ORDER BY time DESC LIMIT 30", {
+    local result = exports['ghmattimysql']:execute("SELECT * FROM phone_calls WHERE phone_calls.owner = @num ORDER BY time DESC LIMIT 30", {
         ['@num'] = num
     })
     return result
@@ -396,7 +378,7 @@ end
 
 function saveAppels (appelInfo)
     if appelInfo.extraData == nil or appelInfo.extraData.useNumber == nil then
-        MySQL.Async.insert("INSERT INTO phone_calls (`owner`, `num`,`incoming`, `accepts`) VALUES(@owner, @num, @incoming, @accepts)", {
+        exports['ghmattimysql']:execute("INSERT INTO phone_calls (`owner`, `num`,`incoming`, `accepts`) VALUES(@owner, @num, @incoming, @accepts)", {
             ['@owner'] = appelInfo.transmitter_num,
             ['@num'] = appelInfo.receiver_num,
             ['@incoming'] = 1,
@@ -410,7 +392,7 @@ function saveAppels (appelInfo)
         if appelInfo.hidden == true then
             mun = "#######"
         end
-        MySQL.Async.insert("INSERT INTO phone_calls (`owner`, `num`,`incoming`, `accepts`) VALUES(@owner, @num, @incoming, @accepts)", {
+        exports['ghmattimysql']:execute("INSERT INTO phone_calls (`owner`, `num`,`incoming`, `accepts`) VALUES(@owner, @num, @incoming, @accepts)", {
             ['@owner'] = appelInfo.receiver_num,
             ['@num'] = num,
             ['@incoming'] = 0,
@@ -566,15 +548,16 @@ AddEventHandler('gcPhone:appelsDeleteHistorique', function (numero)
     local sourcePlayer = tonumber(source)
     local srcIdentifier = getPlayerID(sourcePlayer)
     local srcPhone = srcIdentifier.PlayerData.charinfo.phone
-    MySQL.Async.execute("DELETE FROM phone_calls WHERE `owner` = @owner AND `num` = @num", {
+    exports['ghmattimysql']:execute("DELETE FROM phone_calls WHERE `owner` = @owner AND `num` = @num", {
         ['@owner'] = srcPhone,
         ['@num'] = numero
     })
 end)
 
 function appelsDeleteAllHistorique(srcIdentifier)
-    local srcPhone = srcIdentifier.PlayerData.charinfo.phone
-    MySQL.Async.execute("DELETE FROM phone_calls WHERE `owner` = @owner", {
+    local player = RSCore.Functions.GetPlayer(srcIdentifier)
+    local srcPhone = player.PlayerData.charinfo.phone
+    exports['ghmattimysql']:execute("DELETE FROM phone_calls WHERE `owner` = @owner", {
         ['@owner'] = srcPhone
     })
 end
