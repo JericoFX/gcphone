@@ -60,28 +60,29 @@ Citizen.CreateThread(function()
   while true do
     Citizen.Wait(0)
     if takePhoto ~= true then
-      if IsControlJustReleased(1, KeyOpenClose) then
+      if IsControlJustPressed(1, KeyOpenClose) then
         TooglePhone()
       end
       if menuIsOpen == true then
         for _, value in pairs(KeyToucheCloseEvent) do
-          if IsControlJustReleased(1, value.code) then
+          if IsControlJustPressed(1, value.code) then
             SendNUIMessage({keyUp = value.event})
           end
         end
-        if useMouse == false and hasFocus == ignoreFocus then
-          print("segunda")
+        if hasFocus == ignoreFocus then
+         -- print("segunda")
           local nuiFocus = not hasFocus
           SetNuiFocus(nuiFocus, nuiFocus)
           hasFocus = nuiFocus
-       --[[  elseif useMouse == false and hasFocus == true then
-        print("tercera")
+        end
+        if useMouse == false and hasFocus == true then
+       -- print("tercera")
          SetNuiFocus(false, false)
-          hasFocus = false ]]
+          hasFocus = false
         end
       else
         if hasFocus == true then
-          print("cuarta")
+         -- print("cuarta")
           SetNuiFocus(false, false)
           hasFocus = false
         end
@@ -478,7 +479,7 @@ RegisterNUICallback('blur', function(data, cb)
   cb()
 end)
 
---[[ RegisterNUICallback('reponseText', function(data, cb)
+RegisterNUICallback('reponseText', function(data, cb)
   local limit = data.limit or 255
   local title = data.title or ''
   local text = data.text or ''
@@ -493,7 +494,7 @@ end)
       text = GetOnscreenKeyboardResult()
   end
   cb(json.encode({text = text}))
-end) ]]
+end)
 --====================================================================================
 --  Event - Messages
 --====================================================================================
