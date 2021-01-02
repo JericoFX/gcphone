@@ -21,6 +21,7 @@ MenuV from Tigo https://github.com/ThymonA/menuv (No need yet)
 
 Run the SQL code.
 
+The Resource name MUST BE gcphone
 
 start the dependences like Screenshot-basic first
 
