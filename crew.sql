@@ -1,5 +1,4 @@
 SET FOREIGN_KEY_CHECKS = 0;
-ALTER TABLE `players` ADD COLUMN `crypto` VARCHAR(255) NULL '{"bitcoin": 0, "ethereum": 0, "bitcoin-cash": 0, "bitcoin-sv": 0, "litecoin": 0, "binance-coin": 0, "monero": 0, "dash": 0, "zcash": 0, "maker": 0}';
 
 DROP TABLE IF EXISTS `crew_phone_bank`;
 CREATE TABLE IF NOT EXISTS `crew_phone_bank` (
