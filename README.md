@@ -11,7 +11,7 @@ Take from the original resource and modified to work with Qbus based servers.
 
 # IMPORTANT INFORMATION
 
-I found a fix to the Nil values in the server console, it happend because when we are in the selection menu, the resource want an id, at that momento we dont have that, so the fix i found is going to the rs-spawn (qb-spawn) in this part https://prnt.sc/wdv3av  put the trigger event in this case is       TriggerEvent('crew:onPlayerLoaded', source)  like the image.
+I found a fix to the Nil values in the server console, it happend because when we are in the selection menu, the resource want an id, at that momento we dont have that, so the fix i found is going to the rs-spawn (qb-spawn) in this part https://prnt.sc/wdv3av  put the trigger event in this case is  TriggerEvent('gcphone:FixOnLoad)  like the image.
 
 To install this resource you need:
 

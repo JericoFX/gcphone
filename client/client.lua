@@ -474,6 +474,12 @@ AddEventHandler('gcphone:autoAcceptCall', function(infoCall)
   SendNUIMessage({ event = "autoAcceptCall", infoCall = infoCall})
 end)
 
+
+RegisterNetEvent('gcphone:FixOnLoad')
+AddEventHandler('gcphone:FixOnLoad', function(infoCall)
+  TriggerServerEvent('crew:onPlayerLoaded', GetPlayerServerId(PlayerId()))
+end)
+
 --====================================================================================
 --  Gestion des evenements NUI
 --==================================================================================== 
@@ -630,11 +636,11 @@ end)
 ----------------------------------
 ---------- GESTION VIA WEBRTC ----
 ----------------------------------
-AddEventHandler('onResourceStart', function(resource)
+--[[ AddEventHandler('onResourceStart', function(resource)
   if resource == GetCurrentResourceName() then
     TriggerServerEvent('crew:onPlayerLoaded', GetPlayerServerId(PlayerId()))
   end
-end)
+end) ]]
 
 RegisterNUICallback('setIgnoreFocus', function (data, cb)
   ignoreFocus = data.ignoreFocus
