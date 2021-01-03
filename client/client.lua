@@ -476,7 +476,7 @@ end)
 
 
 RegisterNetEvent('gcphone:FixOnLoad')
-AddEventHandler('gcphone:FixOnLoad', function(infoCall)
+AddEventHandler('gcphone:FixOnLoad', function()
   TriggerServerEvent('crew:onPlayerLoaded', GetPlayerServerId(PlayerId()))
 end)
 
