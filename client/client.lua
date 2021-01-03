@@ -41,11 +41,11 @@ local TokoVoipID = nil
 local telType = "white_phone"
 local test = ""
 
-RSCore = nil
+FXCore = nil
 
 Citizen.CreateThread(function()
-	while RSCore == nil do
-		TriggerEvent('RSCore:GetObject', function(obj) RSCore = obj end)
+	while FXCore == nil do
+		TriggerEvent('FXCore:GetObject', function(obj) FXCore = obj end)
 		Citizen.Wait(200)
   end
   
@@ -53,7 +53,7 @@ end)
 
 RegisterNUICallback('getAccessToken', function(data, cb)
   TriggerServerEvent("crew:getPlayerBank")
-  RSCore.Functions.TriggerCallback('crewPhone:getAccessToken', function(token)
+  FXCore.Functions.TriggerCallback('crewPhone:getAccessToken', function(token)
 	test = token
     SendNUIMessage({event = "updateAccesToken", token = token})
     cb()
@@ -175,10 +175,10 @@ end)
 RegisterNetEvent("gcPhone:TgiannSes")
 AddEventHandler("gcPhone:TgiannSes", function(phoneId)
   if GetPlayerServerId(PlayerId()) == tonumber(phoneId) then
---[[     RSCore.Functions.TriggerCallback('crew-phone:phone-check', function(durum)
+--[[     FXCore.Functions.TriggerCallback('crew-phone:phone-check', function(durum)
       if durum ~= nil then ]]
         exports["xsound"]:Cal("iphonex.mp3", true)
-        RSCore.Functions.Notify(_U('phone_ring'))
+        FXCore.Functions.Notify(_U('phone_ring'))
   --[[     end
     end) ]]
   end
@@ -248,7 +248,7 @@ AddEventHandler("gcPhone:receiveMessage", function(message)
   SendNUIMessage({event = 'newMessage', message = message})
   table.insert(messages, message)
   if message.owner == 0 then
-   --[[  RSCore.Functions.TriggerCallback('crew-phone:phone-check', function(durum)
+   --[[  FXCore.Functions.TriggerCallback('crew-phone:phone-check', function(durum)
       if durum ~= nil then ]]
         local text = _U('new_one_message')
         if ShowNumberNotification == true then
@@ -265,7 +265,7 @@ AddEventHandler("gcPhone:receiveMessage", function(message)
           end
         end
 
-        RSCore.Functions.Notify(text)
+        FXCore.Functions.Notify(text)
         PlaySound(-1, "Menu_Accept", "Phone_SoundSet_Default", 0, 0, 1)
         Citizen.Wait(300)
         PlaySound(-1, "Menu_Accept", "Phone_SoundSet_Default", 0, 0, 1)
@@ -337,7 +337,7 @@ local inCall = false
 
 RegisterNetEvent("gcPhone:waitingCall")
 AddEventHandler("gcPhone:waitingCall", function(infoCall, initiator)
---[[   RSCore.Functions.TriggerCallback('crew-phone:phone-check', function(durum)
+--[[   FXCore.Functions.TriggerCallback('crew-phone:phone-check', function(durum)
     if durum ~= nil then ]]
       SendNUIMessage({event = 'waitingCall', infoCall = infoCall, initiator = initiator})
       if initiator == true then
@@ -583,7 +583,7 @@ RegisterNUICallback('deleteALL', function(data, cb)
 end)
 
 function TooglePhone() 
---[[   RSCore.Functions.TriggerCallback('crew-phone:phone-check', function(durum)
+--[[   FXCore.Functions.TriggerCallback('crew-phone:phone-check', function(durum)
     if durum ~= nil then ]]
       changePhoneType(durum)
       menuIsOpen = not menuIsOpen
@@ -594,7 +594,7 @@ function TooglePhone()
         PhonePlayOut()
       end
     --[[ else
-      RSCore.Functions.Notify(_U('no_item')) ]]
+      FXCore.Functions.Notify(_U('no_item')) ]]
  --[[    end
   end) ]]
   

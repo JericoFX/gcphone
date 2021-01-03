@@ -47,6 +47,7 @@ files {
 }
 
 client_script {
+	"@menuv/menuv.lua",
 	'locale.lua',
 	'locales/en.lua',
 	'locales/tr.lua',

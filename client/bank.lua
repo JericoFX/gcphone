@@ -70,7 +70,7 @@ RegisterNUICallback('transfer', function(data)
 end)
 
 RegisterNUICallback('checkBank', function()
-    RSCore.Functions.TriggerCallback('crew-phone:check-bank', function(cb)
+    FXCore.Functions.TriggerCallback('crew-phone:check-bank', function(cb)
         SendNUIMessage({event = 'updateBankHistory', history = cb})
     end)
 end)

@@ -23565,7 +23565,7 @@ Utils = GestureDetector.utils = {
   },
 
   /**
-   * convert a string with underscores to camelCase
+   * convert a string with undeFXCores to camelCase
    * so prevent_default becomes preventDefault
    * @param {String} str
    * @return {String} camelCaseStr

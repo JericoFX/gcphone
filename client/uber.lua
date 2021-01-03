@@ -44,14 +44,14 @@ end
 
 RegisterNUICallback('crewPhone_uberTrigger', function()
     if uberBasladi then
-        RSCore.Functions.Notify(_U('uber_passive'))
+        FXCore.Functions.Notify(_U('uber_passive'))
 		uberBasladi = false
 		paketNoktasi = true	
         RemoveBlip(uberBlip)
         SendNUIMessage({event = 'updateUber', status = uberBasladi})
         SendNUIMessage({event = 'updateSiparisStatus', status = false})
 	else
-		RSCore.Functions.Notify(_U('uber_active'))
+		FXCore.Functions.Notify(_U('uber_active'))
 		uberBasladi = true
         paketNoktasi = false
         SendNUIMessage({event = 'updateUber', status = uberBasladi})
@@ -67,7 +67,7 @@ Citizen.CreateThread(function()
 			if uberBasladi then
 				PlaySound(-1, "Menu_Accept", "Phone_SoundSet_Default", 0, 0, 1)
 				uberChoosenItem = math.random(1,#Config.uberItems)
-				RSCore.Functions.Notify(_U('uber_new_delivery') .. Config.uberItems[uberChoosenItem]["name"] .. _U('uber_marked'))
+				FXCore.Functions.Notify(_U('uber_new_delivery') .. Config.uberItems[uberChoosenItem]["name"] .. _U('uber_marked'))
 				paketNoktasi = true
                 uberChoosenAdress = math.random(1,#Config.uberDelivery)
                 local streetName = GetStreetNameFromHashKey(GetStreetNameAtCoord(Config.uberDelivery[uberChoosenAdress]["x"], Config.uberDelivery[uberChoosenAdress]["y"], Config.uberDelivery[uberChoosenAdress]["z"]))
@@ -88,12 +88,12 @@ function rewarduber()
 	RemoveBlip(uberBlip)
 	local esyaMarketFiyat = Config.uberItems[uberChoosenItem]["price"]
 	local price = (esyaMarketFiyat * Config.uberPriceMultiplier) + math.random(Config.uberTipMin,Config.uberTipMax)
-	RSCore.Functions.Notify(_U('uber_delivery_succ') .. ESX.Math.Round(price))
+	FXCore.Functions.Notify(_U('uber_delivery_succ') .. ESX.Math.Round(price))
 	if npcEvdemi == 1 then
 		local bahsis = math.random(3,10)
 		local toplamPara = price + bahsis
 		TriggerServerEvent('esx_uber:pay', toplamPara)
-		RSCore.Functions.Notify(_U('uber_tips') .. bahsis)
+		FXCore.Functions.Notify(_U('uber_tips') .. bahsis)
 
 	elseif npcEvdemi ~= 1 then
 		TriggerServerEvent('esx_uber:pay', price)
@@ -109,7 +109,7 @@ Citizen.CreateThread(function ()
 				Draw3DText2(Config.uberDelivery[uberChoosenAdress]["x"], Config.uberDelivery[uberChoosenAdress]["y"], Config.uberDelivery[uberChoosenAdress]["z"] + 0.3, tostring("~w~~g~[E]~w~ ".._U('uber_knock_door')))
 			
 				if(IsControlJustPressed(1, Keys["E"])) then
-					RSCore.Functions.TriggerCallback('crew-phone:item-check', function(qtty)
+					FXCore.Functions.TriggerCallback('crew-phone:item-check', function(qtty)
 						if qtty > 0 then
 							TriggerServerEvent("uber:esyaSil", Config.uberItems[uberChoosenItem]["item"])
 							kapiCalindi = true
@@ -132,7 +132,7 @@ Citizen.CreateThread(function ()
 								rewarduber()
 							end
 						else
-							RSCore.Functions.Notify(_U('uber_not_have_item') .. Config.uberItems[uberChoosenItem]["name"])
+							FXCore.Functions.Notify(_U('uber_not_have_item') .. Config.uberItems[uberChoosenItem]["name"])
 						end
 					end, Config.uberItems[uberChoosenItem]["item"])
 				end

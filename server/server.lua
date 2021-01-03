@@ -10,12 +10,12 @@
                                                                                                  
 
  ]]
-RSCore = nil
+FXCore = nil
 
-TriggerEvent('RSCore:GetObject', function(obj) RSCore = obj end)
+TriggerEvent('FXCore:GetObject', function(obj) FXCore = obj end)
 math.randomseed(os.time())
 
-RSCore.Functions.CreateCallback("crewPhone:getAccessToken",function(a,b)
+FXCore.Functions.CreateCallback("crewPhone:getAccessToken",function(a,b)
     b(________)
 end)
 
@@ -57,7 +57,7 @@ end
 --  Utils
 --====================================================================================
 function getSourceFromIdentifier(identifier, cb)
-    local xPlayers = RSCore.Functions.GetPlayers()
+    local xPlayers = FXCore.Functions.GetPlayers()
 
     for k, user in pairs(xPlayers) do
         if GetPlayerIdentifiers(user)[1] == identifier.PlayerData.steam then
@@ -69,7 +69,7 @@ function getSourceFromIdentifier(identifier, cb)
 end
 
 function getIdentifierByPhoneNumber(phone_number) 
-    local player = RSCore.Functions.GetPlayerByPhone(phone_number)
+    local player = FXCore.Functions.GetPlayerByPhone(phone_number)
     if player ~= nil then
     return player
     else
@@ -81,14 +81,14 @@ function getUserTwitterAccount(source, _identifier)
     local _source = source
     local identifier = _identifier
   --  print(identifier)
-    local xPlayer = RSCore.Functions.GetPlayer(_source)
+    local xPlayer = FXCore.Functions.GetPlayer(_source)
 
     exports['ghmattimysql']:execute("SELECT * FROM players WHERE steam = @identifier", {
         ['@identifier'] = identifier.PlayerData.steam
     }, function(result2)
       --  print(result2[1])
         local user = result2[1]
-        local player = RSCore.Functions.GetPlayer(user.steam)
+        local player = FXCore.Functions.GetPlayer(user.steam)
  
         if user == nil then 
             karakteribekle(xPlayer.PlayerData.source, identifier.PlayerData.steam)
@@ -124,7 +124,7 @@ function karakteribekle(source, identifier)
 end
 
 function getPlayerID(source)
-    local xPlayer = RSCore.Functions.GetPlayer(source)
+    local xPlayer = FXCore.Functions.GetPlayer(source)
     return xPlayer
 end
 
@@ -195,8 +195,8 @@ function notifyContactChange(source, identifier)
     end
 end
 
-RSCore.Functions.CreateCallback('crew-phone:phone-check', function(source, cb)
-    local xPlayer = RSCore.Functions.GetPlayer(source)
+FXCore.Functions.CreateCallback('crew-phone:phone-check', function(source, cb)
+    local xPlayer = FXCore.Functions.GetPlayer(source)
     if not xPlayer then return; end
     for k, v in pairs(Config.Phones) do
         local items = xPlayer.getInventoryItem(v)
@@ -208,8 +208,8 @@ RSCore.Functions.CreateCallback('crew-phone:phone-check', function(source, cb)
     cb(nil)
 end)
 
-RSCore.Functions.CreateCallback('crew-phone:item-check', function(source, cb, data)
-    local xPlayer = RSCore.Functions.GetPlayer(source)
+FXCore.Functions.CreateCallback('crew-phone:item-check', function(source, cb, data)
+    local xPlayer = FXCore.Functions.GetPlayer(source)
     if not xPlayer then return; end
     local items = xPlayer.getInventoryItem(data)
     cb(items.count)
@@ -305,7 +305,7 @@ function deleteAllMessageFromPhoneNumber(source, identifier, phone_number)
 end
 
 function deleteAllMessage(identifier)
-    local player = RSCore.Functions.GetPlayer(identifier)
+    local player = FXCore.Functions.GetPlayer(identifier)
     local mePhoneNumber = player.PlayerData.charinfo.phone
     exports['ghmattimysql']:execute("DELETE FROM phone_messages_crew WHERE `receiver` = @mePhoneNumber", {
         ['@mePhoneNumber'] = mePhoneNumber
@@ -555,7 +555,7 @@ AddEventHandler('gcPhone:appelsDeleteHistorique', function (numero)
 end)
 
 function appelsDeleteAllHistorique(srcIdentifier)
-    local player = RSCore.Functions.GetPlayer(srcIdentifier)
+    local player = FXCore.Functions.GetPlayer(srcIdentifier)
     local srcPhone = player.PlayerData.charinfo.phone
     exports['ghmattimysql']:execute("DELETE FROM phone_calls WHERE `owner` = @owner", {
         ['@owner'] = srcPhone

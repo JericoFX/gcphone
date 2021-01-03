@@ -3,8 +3,8 @@
 --  https://discord.gg/aUDWCvM -- 
 --  fivemleak.com -- 
 --  fkn crew -- 
-RSCore.Functions.CreateCallback("crew:getBills", function(a, b)
-    local c = RSCore.Functions.GetPlayer(a)
+FXCore.Functions.CreateCallback("crew:getBills", function(a, b)
+    local c = FXCore.Functions.GetPlayer(a)
     exports['ghmattimysql']:execute("SELECT amount, id, target, label FROM billing WHERE identifier = @identifier", {["@identifier"] = c.identifier}, function(d)
         b(d)
     end)
@@ -12,13 +12,13 @@ end)
 
 RegisterServerEvent("gcPhone:faturapayBill")
 AddEventHandler("gcPhone:faturapayBill", function(a)
-    local b = RSCore.Functions.GetPlayer(source)
+    local b = FXCore.Functions.GetPlayer(source)
     exports['ghmattimysql']:execute("SELECT * FROM billing WHERE id = @id", {["@id"] = a}, function(c)
         local d = c[1].sender;
         local e = c[1].target_type;
         local f = c[1].target;
         local g = c[1].amount;
-        local h = RSCore.Functions.GetPlayerentifier(d)
+        local h = FXCore.Functions.GetPlayerentifier(d)
         if e == "player" then if h ~= nil then
             if b.getAccount("bank").money >= g then
                 exports['ghmattimysql']:execute("DELETE from billing WHERE id = @id", {["@id"] = a}, function(i)

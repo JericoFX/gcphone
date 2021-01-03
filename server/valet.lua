@@ -1,5 +1,5 @@
-RSCore.Functions.CreateCallback("gcPhone:getCarsByPlate", function(a, b,plate)
-    local c = RSCore.Functions.GetPlayer(a)
+FXCore.Functions.CreateCallback("gcPhone:getCarsByPlate", function(a, b,plate)
+    local c = FXCore.Functions.GetPlayer(a)
    -- print(plate)
     exports['ghmattimysql']:execute("SELECT hash FROM player_vehicles WHERE plate = @cid", {["@cid"] = plate}, function(d)
         --print(d.plate)
@@ -27,8 +27,8 @@ function tprint (tbl, indent)
       end
     end
   end
-RSCore.Functions.CreateCallback("gcPhone:getCars", function(a, b)
-    local c = RSCore.Functions.GetPlayer(a)
+FXCore.Functions.CreateCallback("gcPhone:getCars", function(a, b)
+    local c = FXCore.Functions.GetPlayer(a)
     exports['ghmattimysql']:execute("SELECT * FROM player_vehicles WHERE steam = @cid", {["@cid"] = c.PlayerData.steam}, function(d)
         print(d.plate)
         local e = {} for f, g in ipairs(d) do
@@ -40,14 +40,14 @@ end)
 RegisterServerEvent("gcPhone:finish")
 AddEventHandler("gcPhone:finish", function(a)
     local b = source;
-    local c = RSCore.Functions.GetPlayer(b)
-    TriggerClientEvent("RSCore:Notify", b, Config.valetPrice .. _U("valet_succ"))
+    local c = FXCore.Functions.GetPlayer(b)
+    TriggerClientEvent("FXCore:Notify", b, Config.valetPrice .. _U("valet_succ"))
     c.Functions.RemoveMoney("bank", Config.valetPrice)
 end)
 RegisterServerEvent("gcPhone:valet-car-set-outside")
 AddEventHandler("gcPhone:valet-car-set-outside", function(a)
     local b = source;
-    local c = RSCore.Functions.GetPlayer(b)
+    local c = FXCore.Functions.GetPlayer(b)
     if c then
         exports['ghmattimysql']:execute("UPDATE player_vehicles SET state = @stored WHERE plate = @plate", {["@plate"] = a, ["@stored"] = 2})
     end

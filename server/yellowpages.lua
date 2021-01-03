@@ -19,7 +19,7 @@ function YellowPagesPostIlan(a, b, c, d, e)
     
     getUserYellow(d, function(f)
         exports['ghmattimysql']:execute("SELECT * FROM players WHERE players.steam = @realUser", {["@realUser"] = d}, function(g)
-            local player = RSCore.Functions.GetPlayer(g[1].steam)
+            local player = FXCore.Functions.GetPlayer(g[1].steam)
             exports['ghmattimysql']:execute("INSERT INTO yellowpages_posts (`authorId`, `message`, `image`, `realUser`, `phone`) VALUES(@authorId, @message, @image, @realUser, @phone);", {
                 ["@authorId"] = f.id,
                  ["@message"] = a,

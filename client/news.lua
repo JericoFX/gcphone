@@ -2,24 +2,27 @@ local PlayerData = {}
 local wait = 1000
 local newsMenu = Config.newsBlip
 PlayerJob = {}
---[[ RegisterNetEvent('RSCore:setJob')
-AddEventHandler('RSCore:setJob', function(job)
-    PlayerData.job = job
-end) ]]
-RegisterNetEvent('RSCore:Client:OnPlayerLoaded')
-AddEventHandler('RSCore:Client:OnPlayerLoaded', function()
 
-    PlayerJob = RSCore.Functions.GetPlayerData().job
+RegisterNetEvent('FXCore:Client:OnPlayerLoaded')
+AddEventHandler('FXCore:Client:OnPlayerLoaded', function()
+
+    PlayerJob = FXCore.Functions.GetPlayerData().job
   
 
     
 end)
 
-RegisterNetEvent('RSCore:Client:OnJobUpdate')
-AddEventHandler('RSCore:Client:OnJobUpdate', function(JobInfo)
+RegisterNetEvent('FXCore:Client:OnJobUpdate')
+AddEventHandler('FXCore:Client:OnJobUpdate', function(JobInfo)
 
     PlayerJob = JobInfo
 
+end)
+
+
+RegisterNetEvent('newsmenu:new')
+AddEventHandler('newsmenu:new', function()
+    newNews()
 end)
 
 Citizen.CreateThread(function()
@@ -57,8 +60,8 @@ Citizen.CreateThread(function()
                         if PlayerData.job.grade == 1 then
                             table.insert(elements, {label = _U('news_boss_action'), value = "boss"})	
                         end
-                        RSCore.UI.Menu.CloseAll()
-                        RSCore.UI.Menu.Open('default', GetCurrentResourceName(), 'news_menu',
+                        FXCore.UI.Menu.CloseAll()
+                        FXCore.UI.Menu.Open('default', GetCurrentResourceName(), 'news_menu',
                         {
                             title    = 'Weazel News',
                             align    = 'top-right',
@@ -70,7 +73,7 @@ Citizen.CreateThread(function()
                             elseif data.current.value == "news_delete" then
                                 newsDelete()
                             elseif data.current.value == "boss" then
-                                TriggerEvent('RSCore_society:openBossMenu', 'news', function(data, menu)
+                                TriggerEvent('FXCore_society:openBossMenu', 'news', function(data, menu)
                                     menu.close()
                                     CurrentAction     = 'menu_boss_actions'
                                     CurrentActionMsg  = _U('open_bossmenu')
@@ -91,11 +94,39 @@ Citizen.CreateThread(function()
     end
 end)
 
-function newNews()
---[[ local dialog1 = LocalInput("news",30, _U('news_title'))
 
-if dialog1 ~= nil or dialog1 ~= "" or diaglo1 ~= 0 then
-    local dialog2 = LocalInput("news",60, _U('news_content'))
+function newNews()
+  --[[   local assert = assert
+    local MenuV = assert(MenuV)
+    local menu = MenuV:CreateMenu(false, 'Welcome to MenuV', 'topleft', 255, 0, 0, 'size-125')
+
+    local checkbox = menu:AddCheckbox({ icon = '💡', label = _U('news_title'), value = 'n' })
+    local checkbox1 = menu:AddCheckbox({ icon = '💡', label = _U('news_content'), value = 'n', disabled = true })
+    local checkbox2 = menu:AddCheckbox({ icon = '💡', label =_U('news_img'), value = 'n' , disabled = true })
+    local checkbox3 = menu:AddCheckbox({ icon = '💡', label = _U('news_video'), value = 'n', disabled = true  })
+
+    checkbox:On("check",function()
+        local dialog1 = LocalInput("news",30, _U('news_title'))
+      
+         checkbox1:On("check",function()
+            if dialog1 ~= nil or dialog1 ~= "" or diaglo1 ~= 0 then
+                local dialog2 = LocalInput("news",60, _U('news_content'))
+                
+
+            end
+        
+         end)
+    end) ]]
+--[[     checkbox:On("change",function()
+        checkbox1 = menu:AddCheckbox({ icon = '💡', label = _U('news_content'), value = 'n', disabled = false })
+    
+    
+    end) ]]
+
+
+--[[ 
+
+
     if dialog2 ~= nil or dialog2 ~= "" or diaglo2 ~= 0 then
         local dialog3 = LocalInput("news",30, _U('news_img'))
         if dialog3 ~= nil or dialog3 ~= "" or diaglo3 ~= 0 then
@@ -109,28 +140,28 @@ if dialog1 ~= nil or dialog1 ~= "" or diaglo1 ~= 0 then
     end
 end ]]
 
-    --[[ RSCore.UI.Menu.Open('dialog', GetCurrentResourceName(), 'news_name',
+    --[[ FXCore.UI.Menu.Open('dialog', GetCurrentResourceName(), 'news_name',
     {
         title = _U('news_title')
     },
     function(data, menu)
         menu.close()
         if data.value then
-            RSCore.UI.Menu.Open('dialog', GetCurrentResourceName(), 'news_content',
+            FXCore.UI.Menu.Open('dialog', GetCurrentResourceName(), 'news_content',
             {
                 title = _U('news_content')
             },
             function(data2, menu2)
                 menu2.close()
                 if data2.value then
-                    RSCore.UI.Menu.Open('dialog', GetCurrentResourceName(), 'news_img',
+                    FXCore.UI.Menu.Open('dialog', GetCurrentResourceName(), 'news_img',
                     {
                         title = _U('news_img')
                     },
                     function(data3, menu3)
                         menu3.close()
                         if data3.value then
-                            RSCore.UI.Menu.Open('dialog', GetCurrentResourceName(), 'news_video',
+                            FXCore.UI.Menu.Open('dialog', GetCurrentResourceName(), 'news_video',
                             {
                                 title = _U('news_video')
                             },
@@ -145,19 +176,19 @@ end ]]
                                 menu4.close()
                             end)   
                         else
-                            RSCore.Functions.Notify(_U('news_no_image')) 
+                            FXCore.Functions.Notify(_U('news_no_image')) 
                         end
                     end, function(data3, menu3)
                         menu3.close()
                     end)
                 else
-                    RSCore.Functions.Notify(_U('news_no_content'))
+                    FXCore.Functions.Notify(_U('news_no_content'))
                 end
             end, function(data2, menu2)
                 menu2.close()
             end)
         else
-            RSCore.Functions.Notify(_U('news_no_title'))
+            FXCore.Functions.Notify(_U('news_no_title'))
         end
     end, function(data, menu)
         menu.close()
@@ -220,30 +251,30 @@ end
 end) ]]
 
 function newsDelete()
-    RSCore.Functions.TriggerCallback('crew-phone:get-news', function(news)
+    FXCore.Functions.TriggerCallback('crew-phone:get-news', function(news)
         local elements = {}
         for i=1, #news, 1 do
             table.insert(elements, {label = json.decode(news[i].alldata).name, value = json.decode(news[i].id)})
         end
 
-        RSCore.UI.Menu.Open('default', GetCurrentResourceName(), 'get_news', {
+        FXCore.UI.Menu.Open('default', GetCurrentResourceName(), 'get_news', {
             title    = "Seçilen Haberi Sil",
             align    = 'top-left',
             elements = elements,
         }, function(data, menu)
             menu.close()
             if data.current.value then
-                RSCore.UI.Menu.Open('dialog', GetCurrentResourceName(), 'news_video',
+                FXCore.UI.Menu.Open('dialog', GetCurrentResourceName(), 'news_video',
                 {
                     title = _U('news_delete_message') .. data.current.value
                 },
                 function(data2, menu2)
                     menu2.close()
                     if data.current.value == tonumber(data2.value) then
-                        RSCore.Functions.Notify(_U('news_deleted'))
+                        FXCore.Functions.Notify(_U('news_deleted'))
                         TriggerServerEvent("crew-phone:delete-news", data.current.value)
                     else
-                        RSCore.Functions.Notify(_U('news_not_deleted'))
+                        FXCore.Functions.Notify(_U('news_not_deleted'))
                     end
                 end, function(data2, menu2)
                     menu2.close()
@@ -274,13 +305,13 @@ function DrawText3D(x, y, z, text, scale)
 end
 
 RegisterNUICallback('crew-phone:getNews', function(data, cb)
-    RSCore.Functions.TriggerCallback('crew-phone:get-news', function(news)
+    FXCore.Functions.TriggerCallback('crew-phone:get-news', function(news)
         SendNUIMessage({event = 'news_updateNews', news = news})
     end)
 end)
 
 RegisterNUICallback('crewPhone:getWanted', function(data, cb)
-    RSCore.Functions.TriggerCallback('crewPhone:getWanted', function(wanted)
+    FXCore.Functions.TriggerCallback('crewPhone:getWanted', function(wanted)
         SendNUIMessage({event = 'updateWanted', wanted = wanted})
     end)
 end)

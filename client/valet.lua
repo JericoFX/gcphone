@@ -21,7 +21,7 @@ function setCars(cars)
 end
 
 RegisterNUICallback('getCars', function(data)
-    RSCore.Functions.TriggerCallback('gcPhone:getCars', function(data)
+    FXCore.Functions.TriggerCallback('gcPhone:getCars', function(data)
         for i = 1, #data do
             model = GetDisplayNameFromVehicleModel(data[i]["props"].model)
             data[i]["props"].model = model
@@ -32,11 +32,11 @@ end)
 
 RegisterNUICallback('getCarsValet', function(data)
     if enroute then
-        RSCore.Functions.Notify(_U('valet_wait'))
+        FXCore.Functions.Notify(_U('valet_wait'))
         return
     end
 
-    local gameVehicles = RSCore.Functions.GetVehicles()
+    local gameVehicles = FXCore.Functions.GetVehicles()
 
 	for i = 1, #gameVehicles do
 		local vehicle = gameVehicles[i]
@@ -45,7 +45,7 @@ RegisterNUICallback('getCarsValet', function(data)
             if GetVehicleNumberPlateText(vehicle) == data.props.plate then
                 local vehicleCoords = GetEntityCoords(vehicle)
                 SetNewWaypoint(vehicleCoords.x, vehicleCoords.y)
-				RSCore.Functions.Notify(_U('valet_already_outside'))
+				FXCore.Functions.Notify(_U('valet_already_outside'))
 				return
 			end
         end
@@ -76,13 +76,13 @@ function SpawnVehicle(x, y, z, vehhash, driverhash, props)
 
     local found, spawnPos, spawnHeading = GetClosestVehicleNodeWithHeading(x + math.random(-100, 100), y + math.random(-100, 100), z, 0, 3, 0)
     local coordinates = {x=spawnPos.x,y=spawnPos.y,z=spawnPos.z, spawnHeading}
-    RSCore.Functions.SpawnVehicle(vehhash,  function(callback_vehicle)
+    FXCore.Functions.SpawnVehicle(vehhash,  function(callback_vehicle)
         SetVehicleHasBeenOwnedByPlayer(callback_vehicle, true)
         
         SetEntityAsMissionEntity(callback_vehicle, true, true)
         ClearAreaOfVehicles(GetEntityCoords(callback_vehicle), 5000, false, false, false, false, false);  
         SetVehicleOnGroundProperly(callback_vehicle)
-        RSCore.Functions.SetVehicleProperties(callback_vehicle, props)
+        FXCore.Functions.SetVehicleProperties(callback_vehicle, props)
         
         mechPed = CreatePedInsideVehicle(callback_vehicle, 26, driverhash, -1, true, false)              		--Driver Spawning.
         

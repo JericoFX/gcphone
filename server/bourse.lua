@@ -3,8 +3,8 @@
 --  https://discord.gg/aUDWCvM -- 
 --  fivemleak.com -- 
 --  fkn crew -- 
-RSCore.Functions.CreateCallback("gcPhone:getCrypto",function(a,b,c)
-    local d=RSCore.Functions.Getplayer(a)
+FXCore.Functions.CreateCallback("gcPhone:getCrypto",function(a,b,c)
+    local d=FXCore.Functions.Getplayer(a)
     if not d then 
         return 
     end;
@@ -15,7 +15,7 @@ end)
 
 RegisterServerEvent("gcPhone:buyCrypto")
 AddEventHandler("gcPhone:buyCrypto",function(a,b,c,d)
-    local e=RSCore.Functions.Getplayer(source)
+    local e=FXCore.Functions.Getplayer(source)
     local f=ESX.Math.Round(c)
     if not e then
          return 

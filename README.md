@@ -15,7 +15,7 @@ I found a fix to the Nil values in the server console, it happend because when w
 
 To install this resource you need:
 
-if you use a Custom based QBCore like me just change RSCore to .........
+if you use a Custom based QBCore like me just change FXCore to .........
 
 MenuV from Tigo https://github.com/ThymonA/menuv
 
