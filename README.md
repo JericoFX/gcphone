@@ -17,9 +17,11 @@ To install this resource you need:
 
 if you use a Custom based QBCore like me just change FXCore to .........
 
-MenuV from Tigo https://github.com/ThymonA/menuv
+MenuV from Tigo https://github.com/ThymonA/menuv (No need yet)
 
 Run the SQL code.
+
+The Resource name MUST BE gcphone
 
 start the dependences like Screenshot-basic first
 
@@ -42,6 +44,10 @@ No copyright, but aprecciate if you give me credit for the work, it take me a lo
 * Uber Eats didnt touch yet
 
 ... So if is so buggy why the hell do you release this?
+
 - because i need some help finding bugs, i have a local server so i cann´t test everything
 
+
+
+Dependences: https://www.mediafire.com/file/petxs615og5tkvc/%255BPHONE%255D.rar/file
 REMEMMBER THIS IS A WORK IN PROGRESS SO EXPECT SOME BUGS
