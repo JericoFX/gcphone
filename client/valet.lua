@@ -15,7 +15,7 @@
 local enroute = false
 local mechPed = nil
 local vehicle = {}
-
+local vehhash = nil
 function setCars(cars)
     SendNUIMessage({event = 'updateCars', cars = cars})
 end
@@ -31,6 +31,8 @@ RegisterNUICallback('getCars', function(data)
 end)
 
 RegisterNUICallback('getCarsValet', function(data)
+    local plate = data.props.plate
+    FXCore.Functions.TriggerCallback("Jerico:GetCarByPLate",function(vehicle)
     if enroute then
         FXCore.Functions.Notify(_U('valet_wait'))
         return
@@ -54,12 +56,30 @@ RegisterNUICallback('getCarsValet', function(data)
     TriggerServerEvent("gcPhone:valet-car-set-outside", data.props.plate)
 
 
-    local player = PlayerPedId()
-    local playerPos = GetEntityCoords(player)
+   
 
-    local driverhash = 999748158
-    local vehhash = data.props.model
+   
+     --[[ = data.props.model ]]
+  
     
+        local driverhash = 999748158
+        local player = PlayerPedId()
+        local playerPos = GetEntityCoords(player)
+
+
+         if vehicle ~= nil then
+             vehhash = vehicle
+             FXCore.Functions.Notify("the vehicle is "..vehhash)
+             FXCore.Functions.Notify("the model is "..data.props.model)
+ 
+         end
+     
+     
+     
+ 
+
+  
+
    
     while not HasModelLoaded(driverhash) and RequestModel(driverhash) or not HasModelLoaded(vehhash) and RequestModel(vehhash) do
         RequestModel(driverhash)
@@ -68,12 +88,12 @@ RegisterNUICallback('getCarsValet', function(data)
     end
 
     SpawnVehicle(playerPos.x, playerPos.y, playerPos.z, vehhash, driverhash, data.props)
-
+end,plate)
 end)
 
 function SpawnVehicle(x, y, z, vehhash, driverhash, props)       
 
-
+print(vehhash)
     local found, spawnPos, spawnHeading = GetClosestVehicleNodeWithHeading(x + math.random(-100, 100), y + math.random(-100, 100), z, 0, 3, 0)
     local coordinates = {x=spawnPos.x,y=spawnPos.y,z=spawnPos.z, spawnHeading}
     FXCore.Functions.SpawnVehicle(vehhash,  function(callback_vehicle)

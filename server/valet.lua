@@ -1,14 +1,9 @@
-FXCore.Functions.CreateCallback("gcPhone:getCarsByPlate", function(a, b,plate)
+FXCore.Functions.CreateCallback("Jerico:GetCarByPLate", function(a, b,plate)
     local c = FXCore.Functions.GetPlayer(a)
    -- print(plate)
-    exports['ghmattimysql']:execute("SELECT hash FROM player_vehicles WHERE plate = @cid", {["@cid"] = plate}, function(d)
-        --print(d.plate)
-       -- print(plate)
-       -- tprint(d[1])
+    exports['ghmattimysql']:execute("SELECT vehicle FROM player_vehicles WHERE plate = @cid", {["@cid"] = plate}, function(d)
         if d[1] ~= nil then
-           -- print("PLATE FROM CAR "..d[1].vehicle)
-
-        b(d[1].hash)
+             b(d[1].vehicle)
         end
     end)
 end)
