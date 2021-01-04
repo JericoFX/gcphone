@@ -213,7 +213,9 @@ end)
 --====================================================================================
 RegisterNetEvent('crew:updatePhone')
 AddEventHandler('crew:updatePhone', function(_myPhoneNumber,  _contacts, allmessages)
+
   myPhoneNumber = _myPhoneNumber
+  FXCore.Functions.Notify("NUMERO ES "..myPhoneNumber)
   SendNUIMessage({event = 'updateMyPhoneNumber', myPhoneNumber = myPhoneNumber})
 
   contacts = _contacts

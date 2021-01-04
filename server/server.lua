@@ -25,10 +25,15 @@ AddEventHandler("crew:onPlayerLoaded",function(a)
     local c=getPlayerID(a)
   --  print("LINE 19 "..c.PlayerData.steam)
     getOrGeneratePhoneNumber(b,c,function(d)
-    TriggerClientEvent("crew:updatePhone",b,d,getContacts(c.PlayerData.steam),getMessages(c))
+        print("EL NUMERO ES"..tostring(d))
+    TriggerClientEvent("crew:updatePhone",source,d,getContacts(c.PlayerData.steam),getMessages(c))
+
     sendHistoriqueCall(b,d)
+
     end)
+   
         getUserTwitterAccount(b,c)
+    print("agarre el twitter")
     end)
 
 
@@ -93,23 +98,31 @@ function getUserTwitterAccount(source, _identifier)
         if user == nil then 
             karakteribekle(xPlayer.PlayerData.source, identifier.PlayerData.steam)
         else
-          -- *-- print(FirstLastName)
+
             local FirstLastName = player.PlayerData.charinfo['firstname'] .. ' ' .. player.PlayerData.charinfo['lastname']
-          --  print(FirstLastName)
+
             TriggerClientEvent('crew:getPlayerBank', _source, xPlayer.PlayerData.money.bank, FirstLastName)
 
-            exports['ghmattimysql']:execute("SELECT identifier FROM twitter_accounts WHERE identifier = @identifier", {
+            exports['ghmattimysql']:execute("SELECT * FROM twitter_accounts WHERE identifier = @identifier", {
                 ['@identifier'] = identifier.PlayerData.steam
             }, function(result)
-                if result ~= nil then
-                    TriggerEvent('gcPhone:twitter_login', _source, result)
-                else
+                if #result == 0  then
+
                     exports['ghmattimysql']:execute("INSERT INTO twitter_accounts (identifier, username) VALUES (@identifier, @username)", { 
                         ['@identifier'] = identifier.PlayerData.steam,
                         ['@username'] = FirstLastName
                     }, function()
-                        TriggerEvent('gcPhone:twitter_login', _source, identifier)
+                        print("dato insertado")
+                        TriggerEvent('gcPhone:twitter_login', _source, identifier.PlayerData.steam)
                     end)
+
+
+
+                else
+                    
+                    print("identificador es "..identifier.PlayerData.steam)
+                    TriggerEvent('gcPhone:twitter_login', _source, result[1].identifier)
+                    print("login enviado")
                 end
             end)
         end
@@ -120,6 +133,7 @@ function karakteribekle(source, identifier)
     Citizen.Wait(60000)
     local _source = source
     local xidentifier = identifier
+    print("Karakteri"..identifier)
     getUserTwitterAccount(_source, xidentifier)
 end
 
@@ -131,7 +145,7 @@ end
 function getOrGeneratePhoneNumber (sourcePlayer, identifier, cb)
     local sourcePlayer = sourcePlayer
     local identifier = identifier
-    print(identifier)
+    print("GER OR GENERATE = "..identifier.PlayerData.steam)
     local myPhoneNumber = identifier.PlayerData.charinfo.phone
     cb(myPhoneNumber)
 end

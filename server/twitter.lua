@@ -4,7 +4,14 @@
 --  fivemleak.com -- 
 --  fkn crew -- 
 function TwitterPostTweet(a, b, c, d, e)
-  getUser(d, function(f)
+    if d == nil then
+
+        print("D es Nulo Linea 8")
+        return
+    else
+        print("D = "..tostring(d))
+        local wachin = getPlayerID(d)
+  getUser(wachin.PlayerData.steam, function(f)
     exports['ghmattimysql']:execute("INSERT INTO twitter_tweets (`authorId`, `message`, `image`, `realUser`) VALUES(@authorId, @message, @image, @realUser);", {["@authorId"] = f.id, ["@message"] = a, ["@image"] = b, ["@realUser"] = d}, function()
         tweet = {}
         tweet["authorId"] = f.id;
@@ -18,6 +25,7 @@ function TwitterPostTweet(a, b, c, d, e)
         sendDiscordTwitter(tweet)
     end)
   end)
+end
 end
 
 function TwitterGetTweets(a, b) 
@@ -49,16 +57,29 @@ function TwitterGetFavotireTweets(accountId, cb)
 end
 
 function getUser(identifier, cb)
+    if identifier == nil then
+        print("identifier nil no se puede continuar")
+        return
+    end
+    print(tostring(identifier))
     exports['ghmattimysql']:execute("SELECT id, username as author, avatar_url as authorIcon FROM twitter_accounts WHERE identifier = @identifier", {
         ['@identifier'] = identifier
     }, function(data)
+        if data ~= nil then
+            print("data out")
         cb(data[1])
+        end
     end)
 end
 
 
 function TwitterToogleLike(identifier, tweetId, sourcePlayer)
-    getUser(identifier, function(user)
+    if identifier == nil then
+        print("Identifier Nulo Linea 72")
+        return
+    else
+        local wachin = getPlayerID(identifier)
+    getUser(wachin.PlayerData.steam, function(user)
         exports['ghmattimysql']:execute('SELECT * FROM twitter_tweets WHERE id = @id', {
             ['@id'] = tweetId
         }, function(tweets)
@@ -98,6 +119,7 @@ function TwitterToogleLike(identifier, tweetId, sourcePlayer)
         end)
     end)
 end
+end
 
 function TwitterToogleDelete(identifier, tweetId, sourcePlayer)
     exports['ghmattimysql']:execute('DELETE FROM twitter_tweets WHERE id = @id', {
@@ -120,11 +142,20 @@ end
 RegisterServerEvent('gcPhone:twitter_login')
 AddEventHandler('gcPhone:twitter_login', function(source, identifier)
     local sourcePlayer = tonumber(source)
-    getUser(identifier, function(user)
+    local wachin = getPlayerID(identifier)
+    if wachin == nil then
+        print("Identifier Nulo linea 147")
+        return
+    else
+
+    getUser(wachin.PlayerData.steam, function(user)
+        print("152 "..wachin.PlayerData.steam)
         if user ~= nil then
             TriggerClientEvent('gcPhone:twitter_setAccount', sourcePlayer, user.author, user.authorIcon)
+            print("cuenta realizada")
         end
     end)
+end
 end)
 
 RegisterServerEvent('gcPhone:twitter_changeUsername')
@@ -147,6 +178,10 @@ RegisterServerEvent('gcPhone:twitter_setAvatarUrl')
 AddEventHandler('gcPhone:twitter_setAvatarUrl', function(avatarUrl)
     local sourcePlayer = tonumber(source)
     local identifier = getPlayerID(source)
+    if identifier == nil then
+        print("Identifier Nulo 170")
+        return
+    else
     getUser(identifier.PlayerData.steam, function(user)
         exports['ghmattimysql']:execute("UPDATE `twitter_accounts` SET `avatar_url`= @avatarUrl WHERE identifier = @identifier", {
             ['@identifier'] = identifier.PlayerData.steam,
@@ -157,6 +192,7 @@ AddEventHandler('gcPhone:twitter_setAvatarUrl', function(avatarUrl)
             end
         end)
     end)
+end
 end)
 
 
