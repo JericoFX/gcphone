@@ -25,6 +25,9 @@ AddEventHandler("gcphone:onPlayerLoaded",function(source)
     local b=tonumber(source)
     local c=getPlayerID(b)
    TriggerClientEvent("crew:updatePhone1",source)
+Wait(2000)
+print("FROM 29")
+print("C is "..tostring(c))
    getUserTwitterAccount(b,c)
 
 end)
@@ -114,44 +117,34 @@ end
 function getUserTwitterAccount(source, _identifier)
     local _source = source
     local identifier = _identifier
-  --  print(identifier)
     local xPlayer = FXCore.Functions.GetPlayer(_source)
-
+print("Called From")
     exports['ghmattimysql']:execute("SELECT * FROM players WHERE steam = @identifier", {
         ['@identifier'] = identifier.PlayerData.steam
     }, function(result2)
-      --  print(result2[1])
         local user = result2[1]
         local player = FXCore.Functions.GetPlayer(user.steam)
- 
+
         if user == nil then 
             karakteribekle(xPlayer.PlayerData.source, identifier.PlayerData.steam)
         else
-
             local FirstLastName = player.PlayerData.charinfo['firstname'] .. ' ' .. player.PlayerData.charinfo['lastname']
-
             TriggerClientEvent('crew:getPlayerBank', _source, xPlayer.PlayerData.money.bank, FirstLastName)
-
             exports['ghmattimysql']:execute("SELECT * FROM twitter_accounts WHERE identifier = @identifier", {
                 ['@identifier'] = identifier.PlayerData.steam
             }, function(result)
                 if #result == 0  then
-
                     exports['ghmattimysql']:execute("INSERT INTO twitter_accounts (identifier, username) VALUES (@identifier, @username)", { 
                         ['@identifier'] = identifier.PlayerData.steam,
                         ['@username'] = FirstLastName
                     }, function()
-                        print("dato insertado")
+                       -- print("dato insertado")
                         TriggerEvent('gcPhone:twitter_login', _source, identifier.PlayerData.steam)
                     end)
-
-
-
                 else
-                    
-                    print("identificador es "..identifier.PlayerData.steam)
+                   -- print("identificador es "..identifier.PlayerData.steam)
                     TriggerEvent('gcPhone:twitter_login', _source, result[1].identifier)
-                    print("login enviado")
+                   -- print("login enviado")
                 end
             end)
         end
@@ -162,7 +155,8 @@ function karakteribekle(source, identifier)
     Citizen.Wait(60000)
     local _source = source
     local xidentifier = identifier
-    print("Karakteri"..identifier)
+    --print("Karakteri"..identifier)
+    print("FROM 158")
     getUserTwitterAccount(_source, xidentifier)
 end
 

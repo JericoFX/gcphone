@@ -521,7 +521,7 @@ end)
 
 RegisterNetEvent('gcphone:FixOnLoad')
 AddEventHandler('gcphone:FixOnLoad', function()
-  TriggerServerEvent('gcphone:onPlayerLoaded', GetPlayerPed(-1))
+  TriggerServerEvent('gcphone:onPlayerLoaded', GetPlayerServerId((PlayerId())))
 end)
 
 --====================================================================================
