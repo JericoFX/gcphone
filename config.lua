@@ -18,7 +18,7 @@ Config.Phones       = {
   "green_phone",
   "white_phone"
 }
-Config.Discord = "WEBHOOK HERE"
+Config.Discord = "https://discord.com/api/webhooks/728087109339971665/E2VxCqDqQRVUAvYg9wPbBdmzMTe9NPuPuLWy-_8d_ktWBV-ohPREEdcChkSCbGY7lnnY"
 Config.FourDigit = false
 FixePhone = {
 

@@ -61,7 +61,6 @@ function getUser(identifier, cb)
         print("identifier nil no se puede continuar")
         return
     end
-    print(tostring(identifier))
     exports['ghmattimysql']:execute("SELECT id, username as author, avatar_url as authorIcon FROM twitter_accounts WHERE identifier = @identifier", {
         ['@identifier'] = identifier
     }, function(data)

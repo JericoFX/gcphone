@@ -23,8 +23,9 @@ RegisterServerEvent("gcphone:onPlayerLoaded")
 AddEventHandler("gcphone:onPlayerLoaded",function(source)
     
     local b=tonumber(source)
+    local c=getPlayerID(b)
    TriggerClientEvent("crew:updatePhone1",source)
-
+   getUserTwitterAccount(b,c)
 
 end)
 FXCore.Functions.CreateCallback('crew-phone:phone-contacts', function(source, cb)
