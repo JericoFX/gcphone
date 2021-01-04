@@ -19,24 +19,48 @@ FXCore.Functions.CreateCallback("crewPhone:getAccessToken",function(a,b)
     b(________)
 end)
 
-RegisterServerEvent("crew:onPlayerLoaded")
-AddEventHandler("crew:onPlayerLoaded",function(a)
-    local b=tonumber(a)
-    local c=getPlayerID(a)
-  --  print("LINE 19 "..c.PlayerData.steam)
-    getOrGeneratePhoneNumber(b,c,function(d)
-        print("EL NUMERO ES"..tostring(d))
-    TriggerClientEvent("crew:updatePhone",source,d,getContacts(c.PlayerData.steam),getMessages(c))
+RegisterServerEvent("gcphone:onPlayerLoaded")
+AddEventHandler("gcphone:onPlayerLoaded",function(source)
+    
+    local b=tonumber(source)
+   TriggerClientEvent("crew:updatePhone1",source)
 
-    sendHistoriqueCall(b,d)
+
+end)
+FXCore.Functions.CreateCallback('crew-phone:phone-contacts', function(source, cb)
+    local xPlayer = FXCore.Functions.GetPlayer(source)
+    if not xPlayer then return; end
+    exports['ghmattimysql']:execute("SELECT * FROM phone_users_contacts WHERE identifier = @identifier", {
+        ['@identifier'] = xPlayer.PlayerData.steam
+    },function(result)
+        cb(result)
+    end)
+ 
+end)
+FXCore.Functions.CreateCallback('crew-phone:phone-sendHistoriqueCall', function(source, cb)
+    local xPlayer = FXCore.Functions.GetPlayer(source)
+    if not xPlayer then return; end
+    
+    cb(sendHistoriqueCall(source,xPlayer.PlayerData.steam))
+end)
+FXCore.Functions.CreateCallback('crew-phone:phone-messages', function(source, cb)
+    local xPlayer = FXCore.Functions.GetPlayer(source)
+    if not xPlayer then return; end
+     exports['ghmattimysql']:execute("SELECT phone_messages_crew.*, '"..xPlayer.PlayerData.charinfo.phone.."' FROM phone_messages_crew LEFT JOIN players ON players.steam = @identifier WHERE phone_messages_crew.receiver = '"..xPlayer.PlayerData.charinfo.phone.."'", {
+        ['@identifier'] = xPlayer.PlayerData.steam
+   },function(result)
+
+cb(result)
 
     end)
-   
-        getUserTwitterAccount(b,c)
-    print("agarre el twitter")
-    end)
-
-
+end)
+     
+FXCore.Functions.CreateCallback('crew-phone:phone-number', function(source, cb)
+        local xPlayer = FXCore.Functions.GetPlayer(source)
+        if not xPlayer then return; end
+        
+        cb(xPlayer.PlayerData.charinfo.phone)
+end)
 
 Citizen.CreateThread(function()
 
@@ -46,6 +70,10 @@ Citizen.CreateThread(function()
 
 
 end)
+
+
+
+
 --- Phone Number Style Config.lua FourDigit = true then generate 4 number else generate ####### number
 function getPhoneRandomNumber()
     if Config.FourDigit then
@@ -154,11 +182,17 @@ end
 --  Contacts
 --====================================================================================
 function getContacts(identifier)
- 
-    local result = exports['ghmattimysql']:execute("SELECT * FROM phone_users_contacts WHERE identifier = @identifier", {
+ print(identifier)
+    exports['ghmattimysql']:execute("SELECT * FROM phone_users_contacts WHERE identifier = @identifier", {
         ['@identifier'] = identifier
-    })
-    return result
+    },function(result)
+       
+        return result[1]
+    
+    
+    
+    end)
+
 end
 
 
@@ -201,12 +235,12 @@ function deleteAllContact(identifier)
 end
 
 function notifyContactChange(source, identifier)
-    print("notifyContactChange "..identifier)
+   
     local sourcePlayer = tonumber(source)
     local identifier = getPlayerID(identifier)
-    if sourcePlayer ~= nil then 
+
         TriggerClientEvent("gcPhone:contactList", sourcePlayer, getContacts(identifier.PlayerData.steam))
-    end
+
 end
 
 FXCore.Functions.CreateCallback('crew-phone:phone-check', function(source, cb)
@@ -590,7 +624,7 @@ end)
 --====================================================================================
 
 RegisterCommand('telfix', function(source)
-    TriggerEvent('crew:onPlayerLoaded', source) 
+    TriggerEvent('gcphone:onPlayerLoaded', source) 
 end)
 
 

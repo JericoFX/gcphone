@@ -48,7 +48,7 @@ Citizen.CreateThread(function()
 		TriggerEvent('FXCore:GetObject', function(obj) FXCore = obj end)
 		Citizen.Wait(200)
   end
-  
+  --TriggerServerEvent("crew:onPlayerLoaded",source)
 end)
 
 RegisterNUICallback('getAccessToken', function(data, cb)
@@ -212,19 +212,60 @@ end)
 --  Events
 --====================================================================================
 RegisterNetEvent('crew:updatePhone')
-AddEventHandler('crew:updatePhone', function(_myPhoneNumber,  _contacts, allmessages)
+AddEventHandler('crew:updatePhone', function(source,  _contacts, allmessages)
 
-  myPhoneNumber = _myPhoneNumber
-  FXCore.Functions.Notify("NUMERO ES "..myPhoneNumber)
-  SendNUIMessage({event = 'updateMyPhoneNumber', myPhoneNumber = myPhoneNumber})
 
-  contacts = _contacts
-  SendNUIMessage({event = 'updateContacts', contacts = contacts})
+ 
+  print("LLEGO NUMERO "..myPhoneNumber)
+
+ 
+
+ 
+
   
-  messages = allmessages
-  SendNUIMessage({event = 'updateMessages', messages = messages})
-  
+
 end)
+
+RegisterNetEvent('crew:updatePhone1')
+AddEventHandler('crew:updatePhone1', function(source)
+
+  local PlayerData = FXCore.Functions.GetPlayerData()
+  FXCore.Functions.TriggerCallback("crew-phone:phone-number",function(number)
+    myPhoneNumber = number
+    if number ~= nil or number or number ~= 0 then
+      SendNUIMessage({event = 'updateMyPhoneNumber', myPhoneNumber = myPhoneNumber})
+      FXCore.Functions.Notify("EL NUMERO ES "..number)
+    end
+  
+  
+  end,PlayerData.steam)
+
+  FXCore.Functions.TriggerCallback("crew-phone:phone-contacts",function(_contacts)
+    contacts = _contacts
+   
+    
+      SendNUIMessage({event = 'updateContacts', contacts = contacts})
+      FXCore.Functions.Notify("Contactos "..tostring(contacts))
+    
+  
+  
+  end,PlayerData)
+  FXCore.Functions.TriggerCallback("crew-phone:phone-messages",function(allmessages)
+    messages = allmessages
+   
+      
+      SendNUIMessage({event = 'updateMessages', messages = messages})
+      FXCore.Functions.Notify("Mensajes listos ")
+
+  
+  
+  end,PlayerData)
+
+
+
+end)
+
+  
 
 RegisterNetEvent("gcPhone:contactList")
 AddEventHandler("gcPhone:contactList", function(_contacts)
@@ -479,7 +520,7 @@ end)
 
 RegisterNetEvent('gcphone:FixOnLoad')
 AddEventHandler('gcphone:FixOnLoad', function()
-  TriggerServerEvent('crew:onPlayerLoaded', GetPlayerServerId(PlayerId()))
+  TriggerServerEvent('gcphone:onPlayerLoaded', GetPlayerPed(-1))
 end)
 
 --====================================================================================
