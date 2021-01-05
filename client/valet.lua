@@ -69,18 +69,9 @@ RegisterNUICallback('getCarsValet', function(data)
 
          if vehicle ~= nil then
              vehhash = vehicle
-             FXCore.Functions.Notify("the vehicle is "..vehhash)
-             FXCore.Functions.Notify("the model is "..data.props.model)
  
          end
-     
-     
-     
- 
 
-  
-
-   
     while not HasModelLoaded(driverhash) and RequestModel(driverhash) or not HasModelLoaded(vehhash) and RequestModel(vehhash) do
         RequestModel(driverhash)
         RequestModel(vehhash)
@@ -88,12 +79,13 @@ RegisterNUICallback('getCarsValet', function(data)
     end
 
     SpawnVehicle(playerPos.x, playerPos.y, playerPos.z, vehhash, driverhash, data.props)
+    TriggerEvent("vehiclekeys:client:SetOwner",plate)
+    TriggerEvent("vehiclekeys:client:ToggleEngine")
 end,plate)
 end)
 
 function SpawnVehicle(x, y, z, vehhash, driverhash, props)       
 
-print(vehhash)
     local found, spawnPos, spawnHeading = GetClosestVehicleNodeWithHeading(x + math.random(-100, 100), y + math.random(-100, 100), z, 0, 3, 0)
     local coordinates = {x=spawnPos.x,y=spawnPos.y,z=spawnPos.z, spawnHeading}
     FXCore.Functions.SpawnVehicle(vehhash,  function(callback_vehicle)
