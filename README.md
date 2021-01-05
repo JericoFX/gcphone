@@ -2,7 +2,7 @@
 
 if you think that my time deserve a coffe
 
-buymeacoff.ee/jericofx
+# buymeacoff.ee/jericofx
 
 Take from the original resource and modified to work with Qbus based servers.
 
@@ -25,7 +25,7 @@ The Resource name MUST BE gcphone
 
 start the dependences like Screenshot-basic first
 
-Change in the config.lua the discord WEBHOOK
+Change in the config.lua the discord WEBHOOK << # IF YOU DONT CHANGE THIS THE PICTURE FAIL AND CRASH
 
 No copyright, but aprecciate if you give me credit for the work, it take me a lot of time to make it work. Know Issues:
 
