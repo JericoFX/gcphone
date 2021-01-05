@@ -71,30 +71,11 @@ Config.uberDelivery = {
 
 -- Required uber items on deliver
 Config.uberItems = {
-	[1] = {["item"] = "icetea", ["name"] = "Icetea", ["price"] = 4},
+	[1] = {["item"] = "water_bottle", ["name"] = "Water Bottle", ["price"] = 4},
 	[2] = {["item"] = "chocolate", ["name"] = "Çikolata", ["price"] = 4},
-	[3] = {["item"] = "kulahdondurma", ["name"] = "Külah Dondurma", ["price"] = 4},
-	[4] = {["item"] = "sprunk", ["name"] = "sprunk", ["price"] = 4},
+	[3] = {["item"] = "taco", ["name"] = "Taco", ["price"] = 4},
+	[4] = {["item"] = "painkillers", ["name"] = "Pills", ["price"] = 4},
 	[5] = {["item"] = "bandage", ["name"] = "Bandaj", ["price"] = 4},
 	[6] = {["item"] = "cheeseburger", ["name"] = "Cheeseburger", ["price"] = 4},
-	[7] = {["item"] = "doublecheeseburger", ["name"] = "Double Cheeseburger", ["price"] = 4},
-	[8] = {["item"] = "hamburger", ["name"] = "Hamburger", ["price"] = 4},
-	[9] = {["item"] = "megaburger", ["name"] = "Mega Burger", ["price"] = 4},
-	[10] = {["item"] = "megaxhamburger", ["name"] = "Mega X Hamburger", ["price"] = 4},
-	[11] = {["item"] = "milkshake", ["name"] = "Milkshahe", ["price"] = 4},
-	[12] = {["item"] = "soda", ["name"] = "Soda", ["price"] = 4},
-	[13] = {["item"] = "cola", ["name"] = "Kola", ["price"] = 4},
-	[14] = {["item"] = "sosisli", ["name"] = "Sosisli", ["price"] = 4},
-	[15] = {["item"] = "pizza", ["name"] = "Pizza", ["price"] = 4},
-	[16] = {["item"] = "tavuksoganhalkasi", ["name"] = "Tavuk Sogan Halkasi", ["price"] = 4},
-	[17] = {["item"] = "tavuknuggets", ["name"] = "Tavuk Nuggets", ["price"] = 4},
-	[18] = {["item"] = "raki", ["name"] = "Rakı", ["price"] = 4},
-	[19] = {["item"] = "whitewine", ["name"] = "Beyaz Şarap", ["price"] = 4},
-	[20] = {["item"] = "kofte", ["name"] = "Köfte", ["price"] = 4},
-	[21] = {["item"] = "fixkit", ["name"] = "Tamir Kiti", ["price"] = 4},
-	[22] = {["item"] = "dopebag", ["name"] = "Çiçek Poşeti", ["price"] = 4},
-	[23] = {["item"] = "cupkek", ["name"] = "Cup Kek", ["price"] = 4},
-	[24] = {["item"] = "pankek", ["name"] = "Pan Kek", ["price"] = 4},
-	[25] = {["item"] = "beer", ["name"] = "Bira", ["price"] = 4},
-	[26] = {["item"] = "umbrella", ["name"] = "Şemsiye", ["price"] = 4}
+
 }

@@ -110,30 +110,35 @@ Citizen.CreateThread(function ()
 			
 				if(IsControlJustPressed(1, Keys["E"])) then
 					FXCore.Functions.TriggerCallback('crew-phone:item-check', function(qtty)
-						if qtty > 0 then
-							TriggerServerEvent("uber:esyaSil", Config.uberItems[uberChoosenItem]["item"])
-							kapiCalindi = true
-							npcEvdemi = math.random(1,2)
-							PlayAnimation(PlayerPedId(), "timetable@jimmy@doorknock@", "knockdoor_idle")
-							Citizen.Wait(3000)
-							
-							if npcEvdemi == 1 then
-								TaskStartScenarioInPlace(PlayerPedId(), "PROP_HUMAN_BUM_BIN", 0, true)
+						if qtty ~= nil then
+							if qtty > 0 then
+								TriggerServerEvent("uber:esyaSil", Config.uberItems[uberChoosenItem]["item"])
+								kapiCalindi = true
+								npcEvdemi = math.random(1,2)
+								PlayAnimation(PlayerPedId(), "timetable@jimmy@doorknock@", "knockdoor_idle")
 								Citizen.Wait(3000)
-								ClearPedTasks(PlayerPedId(-1))
-								delivery1 = false
-								paketNoktasi = false
-								rewarduber()
+
+								if npcEvdemi == 1 then
+									TaskStartScenarioInPlace(PlayerPedId(), "PROP_HUMAN_BUM_BIN", 0, true)
+									Citizen.Wait(3000)
+									ClearPedTasks(PlayerPedId(-1))
+									delivery1 = false
+									paketNoktasi = false
+									rewarduber()
+								else
+									TaskStartScenarioInPlace(PlayerPedId(), "PROP_HUMAN_BUM_BIN", 0, true)
+									Citizen.Wait(3000)
+									ClearPedTasks(PlayerPedId(-1))
+									PlaceObjectOnGroundProperly(PackageDeliveryObject)
+									rewarduber()
+								end
 							else
-								TaskStartScenarioInPlace(PlayerPedId(), "PROP_HUMAN_BUM_BIN", 0, true)
-								Citizen.Wait(3000)
-								ClearPedTasks(PlayerPedId(-1))
-								PlaceObjectOnGroundProperly(PackageDeliveryObject)
-								rewarduber()
+								FXCore.Functions.Notify(_U('uber_not_have_item') .. Config.uberItems[uberChoosenItem]["name"])
 							end
 						else
-							FXCore.Functions.Notify(_U('uber_not_have_item') .. Config.uberItems[uberChoosenItem]["name"])
+	FXCore.Functions.Notify("you dont have the item i ask for a "..Config.uberItems[uberChoosenItem]["item"])
 						end
+
 					end, Config.uberItems[uberChoosenItem]["item"])
 				end
 			end
