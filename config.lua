@@ -30,7 +30,8 @@ FixePhone = {
 
 ShowNumberNotification = true 
 
-
+Config.UsingMumble = true
+Config.UsingToko = false
 Config.newsJobName = "reporter"
 Config.newsBlip = vector3(-595.67, -932.5, 28.0) 
 Config.valetPrice = 100

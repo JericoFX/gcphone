@@ -48,7 +48,6 @@ Citizen.CreateThread(function()
 		TriggerEvent('FXCore:GetObject', function(obj) FXCore = obj end)
 		Citizen.Wait(200)
   end
-  --TriggerServerEvent("crew:onPlayerLoaded",source)
 end)
 
 RegisterNUICallback('getAccessToken', function(data, cb)
@@ -398,9 +397,18 @@ RegisterNetEvent("gcPhone:acceptCall")
 AddEventHandler("gcPhone:acceptCall", function(infoCall, initiator)
   if inCall == false and USE_RTC == false then
     inCall = true
+    if Config.UsingToko   then
+      Config.UsingMumble = false
     exports['tokovoip_script']:setPlayerData(GetPlayerName(PlayerId()), "call:channel", infoCall.id + 1120.00, true)
 	  exports.tokovoip_script:addPlayerToRadio(infoCall.id + 1120.00)
-	  TokoVoipID = infoCall.id + 1120.00
+    TokoVoipID = infoCall.id + 1120.00
+  
+    end
+    if Config.UsingMumble then
+    Config.UsingToko = false
+    exports["mumble-voip"]:SetCallChannel(infoCall.id+1)
+
+    end
   end
   if menuIsOpen == false then
     TooglePhone()
@@ -413,10 +421,17 @@ RegisterNetEvent("gcPhone:rejectCall")
 AddEventHandler("gcPhone:rejectCall", function(infoCall)
   if inCall == true then
     inCall = false
-    Citizen.InvokeNative(0xE036A705F989E049)
+   --- Citizen.InvokeNative(0xE036A705F989E049)
+   if Config.UsingToko   then
+    Config.UsingMumble = false
     exports['tokovoip_script']:setPlayerData(GetPlayerName(PlayerId()), "call:channel", 'nil', true)
   	exports.tokovoip_script:removePlayerFromRadio(TokoVoipID)
-  	TokoVoipID = nil
+    TokoVoipID = nil
+   end
+    if Config.UsingMumble then
+      Config.UsingToko = false
+    exports["mumble-voip"]:SetCallChannel(0)
+  end
   end
   PhonePlayText()
   SendNUIMessage({event = 'rejectCall', infoCall = infoCall})
@@ -483,7 +498,7 @@ RegisterNUICallback('notififyUseRTC', function (use, cb)
   USE_RTC = use
   if USE_RTC == true and inCall == true then
     inCall = false
-    Citizen.InvokeNative(0xE036A705F989E049)
+    --Citizen.InvokeNative(0xE036A705F989E049)
     exports['tokovoip_script']:setPlayerData(GetPlayerName(PlayerId()), "call:channel", 'nil', true)
   	exports.tokovoip_script:removePlayerFromRadio(TokoVoipID)
 	  TokoVoipID = nil
