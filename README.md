@@ -31,13 +31,13 @@ No copyright, but aprecciate if you give me credit for the work, it take me a lo
 
 
 
-* For some reason the Yellow pages duplicate the post.
+* For some reason the Yellow pages duplicate the post. # just fixed itself....
 
 * Didnt test the call so... posibility doest work, 
 
-* Some cars cann´t be take from the  garage using valet.
+* Some cars cann´t be take from the  garage using valet. # FIXED
 
-* Sometimes the bank app open in full white screen
+* Sometimes the bank app open in full white screen # FIXED
 
 * News are Unfinished
 
