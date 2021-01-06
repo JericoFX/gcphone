@@ -20,7 +20,7 @@ end ]]
 
 local societyMoney = 0
 function setSocietyBalance (value)
-    print("Called! 9")
+
       societyMoney = value
       SendNUIMessage({event = 'updateSocietyBalance', society = societyMoney})
 end
@@ -33,7 +33,7 @@ end
 
 RegisterNetEvent('crew:getPlayerBank')
 AddEventHandler('crew:getPlayerBank', function(playerData, playerName)
-    print("Called! 21")
+
     setPlayerName(playerName)
     setBankBalance(playerData)
 end)

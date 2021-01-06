@@ -57,7 +57,7 @@ RegisterNUICallback('getAccessToken', function(data, cb)
     SendNUIMessage({event = "updateAccesToken", token = token})
     cb()
   end)
-  print(test)
+
 
 end)
 
@@ -80,19 +80,19 @@ Citizen.CreateThread(function()
           end
         end
         if hasFocus == ignoreFocus then
-         -- print("segunda")
+
           local nuiFocus = not hasFocus
           SetNuiFocus(nuiFocus, nuiFocus)
           hasFocus = nuiFocus
         end
         if useMouse == false and hasFocus == true then
-       -- print("tercera")
+
          SetNuiFocus(false, false)
           hasFocus = false
         end
       else
         if hasFocus == true then
-         -- print("cuarta")
+
           SetNuiFocus(false, false)
           hasFocus = false
         end
@@ -215,7 +215,7 @@ AddEventHandler('crew:updatePhone', function(source,  _contacts, allmessages)
 
 
  
-  print("LLEGO NUMERO "..myPhoneNumber)
+
 
  
 
@@ -233,7 +233,7 @@ AddEventHandler('crew:updatePhone1', function(source)
     myPhoneNumber = number
     if number ~= nil or number or number ~= 0 then
       SendNUIMessage({event = 'updateMyPhoneNumber', myPhoneNumber = myPhoneNumber})
-      FXCore.Functions.Notify("EL NUMERO ES "..number)
+
     end
   
   
@@ -244,7 +244,7 @@ AddEventHandler('crew:updatePhone1', function(source)
    
     
       SendNUIMessage({event = 'updateContacts', contacts = contacts})
-      FXCore.Functions.Notify("Contactos "..tostring(contacts))
+
     
   
   
@@ -254,7 +254,7 @@ AddEventHandler('crew:updatePhone1', function(source)
    
       
       SendNUIMessage({event = 'updateMessages', messages = messages})
-      FXCore.Functions.Notify("Mensajes listos ")
+
 
   
   
@@ -268,7 +268,7 @@ end)
 
 RegisterNetEvent("gcPhone:contactList")
 AddEventHandler("gcPhone:contactList", function(_contacts)
- -- FXCore.Functions.Notify("CONTACTOS ACT "..tostring(_contacts))
+
   SendNUIMessage({event = 'updateContacts', contacts = _contacts})
   contacts = _contacts
 end)
@@ -308,7 +308,7 @@ AddEventHandler("gcPhone:receiveMessage", function(message)
           end
         end
 
-        FXCore.Functions.Notify(text)
+
         PlaySound(-1, "Menu_Accept", "Phone_SoundSet_Default", 0, 0, 1)
         Citizen.Wait(300)
         PlaySound(-1, "Menu_Accept", "Phone_SoundSet_Default", 0, 0, 1)
@@ -421,7 +421,6 @@ RegisterNetEvent("gcPhone:rejectCall")
 AddEventHandler("gcPhone:rejectCall", function(infoCall)
   if inCall == true then
     inCall = false
-   --- Citizen.InvokeNative(0xE036A705F989E049)
    if Config.UsingToko   then
     Config.UsingMumble = false
     exports['tokovoip_script']:setPlayerData(GetPlayerName(PlayerId()), "call:channel", 'nil', true)
@@ -543,7 +542,7 @@ end)
 --  Gestion des evenements NUI
 --==================================================================================== 
 RegisterNUICallback('log', function(data, cb)
-  --print(data)
+
   cb()
 end)
 
@@ -647,9 +646,7 @@ RegisterNUICallback('deleteALL', function(data, cb)
   cb()
 end)
 
-function TooglePhone() 
---[[   FXCore.Functions.TriggerCallback('crew-phone:phone-check', function(durum)
-    if durum ~= nil then ]]
+function TooglePhone()
       changePhoneType(durum)
       menuIsOpen = not menuIsOpen
       SendNUIMessage({show = menuIsOpen})
@@ -658,10 +655,7 @@ function TooglePhone()
       else
         PhonePlayOut()
       end
-    --[[ else
-      FXCore.Functions.Notify(_U('no_item')) ]]
- --[[    end
-  end) ]]
+
   
 end
 

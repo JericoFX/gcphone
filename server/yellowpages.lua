@@ -67,7 +67,6 @@ function getUserYellow(identifier, cb)
     exports['ghmattimysql']:execute("SELECT id, username as author, avatar_url as authorIcon FROM twitter_accounts WHERE twitter_accounts.identifier = @identifier", {
         ['@identifier'] = identifier
     }, function(data)
-        print(tostring(data[1]))
         cb(data[1])
     end)
 end

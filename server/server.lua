@@ -26,8 +26,7 @@ AddEventHandler("gcphone:onPlayerLoaded",function(source)
     local c=getPlayerID(b)
    TriggerClientEvent("crew:updatePhone1",source)
 Wait(2000)
-print("FROM 29")
-print("C is "..tostring(c))
+
    getUserTwitterAccount(b,c)
 
 end)
@@ -118,7 +117,7 @@ function getUserTwitterAccount(source, _identifier)
     local _source = source
     local identifier = _identifier
     local xPlayer = FXCore.Functions.GetPlayer(_source)
-print("Called From")
+
     exports['ghmattimysql']:execute("SELECT * FROM players WHERE steam = @identifier", {
         ['@identifier'] = identifier.PlayerData.steam
     }, function(result2)
@@ -138,13 +137,13 @@ print("Called From")
                         ['@identifier'] = identifier.PlayerData.steam,
                         ['@username'] = FirstLastName
                     }, function()
-                       -- print("dato insertado")
+
                         TriggerEvent('gcPhone:twitter_login', _source, identifier.PlayerData.steam)
                     end)
                 else
-                   -- print("identificador es "..identifier.PlayerData.steam)
+
                     TriggerEvent('gcPhone:twitter_login', _source, result[1].identifier)
-                   -- print("login enviado")
+
                 end
             end)
         end
@@ -155,8 +154,6 @@ function karakteribekle(source, identifier)
     Citizen.Wait(60000)
     local _source = source
     local xidentifier = identifier
-    --print("Karakteri"..identifier)
-    print("FROM 158")
     getUserTwitterAccount(_source, xidentifier)
 end
 
@@ -168,7 +165,7 @@ end
 function getOrGeneratePhoneNumber (sourcePlayer, identifier, cb)
     local sourcePlayer = sourcePlayer
     local identifier = identifier
-    print("GER OR GENERATE = "..identifier.PlayerData.steam)
+
     local myPhoneNumber = identifier.PlayerData.charinfo.phone
     cb(myPhoneNumber)
 end
@@ -177,7 +174,7 @@ end
 --  Contacts
 --====================================================================================
 function getContacts(identifier,cb)
- print(identifier)
+
     exports['ghmattimysql']:execute("SELECT * FROM phone_users_contacts WHERE identifier = @identifier", {
         ['@identifier'] = identifier
     },function(result)
@@ -210,7 +207,7 @@ function updateContact(source, identifier, id, number, display)
 end
 
 function deleteContact(source, identifier, id)
-    print("DELETE"..tostring(identifier))
+
     local sourcePlayer = tonumber(source)
     exports['ghmattimysql']:execute("DELETE FROM phone_users_contacts WHERE `identifier` = @identifier AND `id` = @id", {
         ['@identifier'] = identifier,
@@ -296,7 +293,7 @@ AddEventHandler('gcPhone:_internalAddMessage', function(transmitter, receiver, m
 end)
 
 function _internalAddMessage(transmitter, receiver, message, owner)
-    print("Transmiter is "..transmitter)
+
     exports['ghmattimysql']:execute("INSERT INTO phone_messages_crew (`transmitter`, `receiver`,`message`, `isRead`,`owner`) VALUES(@transmitter, @receiver, @message, @isRead, @owner)", {
         ['@transmitter'] = transmitter,
         ['@receiver'] = receiver,
@@ -470,7 +467,7 @@ AddEventHandler('gcPhone:internal_startCall', function(source, phone_number, rtc
     
     local rtcOffer = rtcOffer
     if phone_number == nil or phone_number == '' then 
-        print('BAD CALL NUMBER IS NIL')
+
         return
     end
 

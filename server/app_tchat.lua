@@ -16,11 +16,11 @@ function TchatGetMessageChannel(a,b)
 end
 
 function TchatAddMessage(a,b)
-    --print(tostring(b))
+
     exports['ghmattimysql']:execute("INSERT INTO phone_app_chat (channel, message) VALUES(@channel, @message)",{['@channel']=a,['@message']=b},function(c)
-      ---  print(c.insertId)
+
         exports['ghmattimysql']:execute("SELECT * from phone_app_chat WHERE id = @id",{['@id']=c.insertId},function(d)
-         --   print(tostring(d))
+
             TriggerClientEvent('gcPhone:tchat_receive',-1,d[1])
         end)
     end)
