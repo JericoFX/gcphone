@@ -39,15 +39,16 @@ No copyright, but aprecciate if you give me credit for the work, it take me a lo
 
 * Sometimes the bank app open in full white screen # FIXED
 
-* News are Unfinished #WIP
+* News # WORKING, 
+  - Bind Command "newsmenu", be sure to have the correct job.
 
 * Uber Eats didnt touch yet #WORKING
 
-... So if is so buggy why the hell do you release this?
-
-- because i need some help finding bugs, i have a local server so i cann´t test everything
+# There is 2 new Config options Config.Core <<< here just put the core version and Config.CoreNotify << put the Notify server side ("QBCore:Notify") etc etc
 
 
 
-Dependences: https://www.mediafire.com/file/petxs615og5tkvc/%255BPHONE%255D.rar/file
+Dependences:
+* https://www.mediafire.com/file/petxs615og5tkvc/%255BPHONE%255D.rar/file
+* https://www.mediafire.com/file/6je3l173jg70cri/input.rar/file
 REMEMMBER THIS IS A WORK IN PROGRESS SO EXPECT SOME BUGS
