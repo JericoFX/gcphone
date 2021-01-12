@@ -11,24 +11,26 @@ Take from the original resource and modified to work with Qbus based servers.
 
 # IMPORTANT INFORMATION
 
+# ALL MY SCRIPT ARE FREE AND OPENSOURCE.
+
 I found a fix to the Nil values in the server console, it happend because when we are in the selection menu, the resource want an id, at that momento we dont have that, so the fix i found is going to the rs-spawn (qb-spawn) in this part https://prnt.sc/wdv3av  put the trigger event in this case is  TriggerEvent('gcphone:FixOnLoad)  like the image.
 
 To install this resource you need:
 
-if you use a Custom based QBCore like me just change FXCore to .........
 
-MenuV from Tigo https://github.com/ThymonA/menuv (No need yet)
+ * MenuV from Tigo https://github.com/ThymonA/menuv << Remember to COMPILE the resource or use this https://www.mediafire.com/file/czyq1jiw0tx5li8/menuv.rar/file
 
-Run the SQL code.
+* Run the SQL code.
 
-The Resource name MUST BE gcphone
+* The Resource name MUST BE gcphone
 
-start the dependences like Screenshot-basic first
+* Start the dependences like Screenshot-basic, xsound, input.
 
 Change in the config.lua the discord WEBHOOK << # IF YOU DONT CHANGE THIS THE PICTURE FAIL AND CRASH
 
-No copyright, but aprecciate if you give me credit for the work, it take me a lot of time to make it work. Know Issues:
+# There is 2 new Config options Config.Core <<< here just put the core version and Config.CoreNotify << put the Notify server side ("QBCore:Notify") etc etc
 
+No copyright, but aprecciate if you give me credit for the work, it take me a lot of time to make it. Know Issues:
 
 
 * For some reason the Yellow pages duplicate the post. # just fixed itself....
@@ -44,7 +46,7 @@ No copyright, but aprecciate if you give me credit for the work, it take me a lo
 
 * Uber Eats didnt touch yet #WORKING
 
-# There is 2 new Config options Config.Core <<< here just put the core version and Config.CoreNotify << put the Notify server side ("QBCore:Notify") etc etc
+
 
 
 
