@@ -11,43 +11,60 @@ Take from the original resource and modified to work with Qbus based servers.
 
 # IMPORTANT INFORMATION
 
+# ALL MY SCRIPT ARE FREE AND OPENSOURCE.
+
 I found a fix to the Nil values in the server console, it happend because when we are in the selection menu, the resource want an id, at that momento we dont have that, so the fix i found is going to the rs-spawn (qb-spawn) in this part https://prnt.sc/wdv3av  put the trigger event in this case is  TriggerEvent('gcphone:FixOnLoad)  like the image.
 
 To install this resource you need:
 
-if you use a Custom based QBCore like me just change FXCore to .........
 
-MenuV from Tigo https://github.com/ThymonA/menuv (No need yet)
+ * MenuV from Tigo https://github.com/ThymonA/menuv << Remember to COMPILE the resource or use this https://www.mediafire.com/file/czyq1jiw0tx5li8/menuv.rar/file
 
-Run the SQL code.
+* Run the SQL code.
 
-The Resource name MUST BE gcphone
+* The Resource name MUST BE gcphone
 
-start the dependences like Screenshot-basic first
+* Start the dependences like Screenshot-basic, xsound, input.
 
 Change in the config.lua the discord WEBHOOK << # IF YOU DONT CHANGE THIS THE PICTURE FAIL AND CRASH
 
-No copyright, but aprecciate if you give me credit for the work, it take me a lot of time to make it work. Know Issues:
+# There is 2 new Config options Config.Core <<< here just put the core version and Config.CoreNotify << put the Notify server side ("QBCore:Notify") etc etc
 
+No copyright, but aprecciate if you give me credit for the work, it take me a lot of time to make it. Know Issues:
 
 
 * For some reason the Yellow pages duplicate the post. # just fixed itself....
 
-* Didnt test the call so... posibility doest work, 
+* Didnt test the call so... # TESTED IN OTHER SERVERS AND WORK 
 
 * Some cars cann´t be take from the  garage using valet. # FIXED
 
 * Sometimes the bank app open in full white screen # FIXED
 
-* News are Unfinished
+* News # WORKING, 
+  - Bind Command "newsmenu", be sure to have the correct job.
 
-* Uber Eats didnt touch yet
-
-... So if is so buggy why the hell do you release this?
-
-- because i need some help finding bugs, i have a local server so i cann´t test everything
+* Uber Eats didnt touch yet #WORKING
 
 
 
-Dependences: https://www.mediafire.com/file/petxs615og5tkvc/%255BPHONE%255D.rar/file
+
+
+Dependences:
+* https://www.mediafire.com/file/petxs615og5tkvc/%255BPHONE%255D.rar/file
+* https://www.mediafire.com/file/6je3l173jg70cri/input.rar/file
 REMEMMBER THIS IS A WORK IN PROGRESS SO EXPECT SOME BUGS
+
+
+F.A.Q
+* Can you convert X resource?
+  - No sorry i dont do commits
+  
+* Why free?
+  - This is not my resource so i cann´t take money from you, if you like the work buy me a coffe, or better support the developers.
+  
+* xDope say that you are trying to stealth scripts.
+  - Comming from a "developer" who doesnt know how to dump an obfuscated code or just PM me and ask i say, fuck him, remember he SELL script so maybe he donest like free stuff
+ 
+ * Why the obfuscation?
+  - i see some people who doesnt give credits to me or my work, and just hide the resource behind a paywall so i protect the code and print in the console where you can find stuff.
