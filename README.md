@@ -54,3 +54,17 @@ Dependences:
 * https://www.mediafire.com/file/petxs615og5tkvc/%255BPHONE%255D.rar/file
 * https://www.mediafire.com/file/6je3l173jg70cri/input.rar/file
 REMEMMBER THIS IS A WORK IN PROGRESS SO EXPECT SOME BUGS
+
+
+F.A.Q
+* Can you convert X resource?
+  - No sorry i dont do commits
+  
+* Why free?
+  - This is not my resource so i cann´t take money from you, if you like the work buy me a coffe, or better support the developers.
+  
+* xDope say that you are trying to stealth scripts.
+  - Comming from a "developer" who doesnt know how to dump an obfuscated code or just PM me and ask i say, fuck him, remember he SELL script so maybe he donest like free stuff
+ 
+ * Why the obfuscation?
+  - i see some people who doesnt give credits to me or my work, and just hide the resource behind a paywall so i protect the code and print in the console where you can find stuff.
