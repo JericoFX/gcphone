@@ -1,8 +1,4 @@
---
---  LEAKED BY S3NTEX -- 
---  https://discord.gg/aUDWCvM -- 
---  fivemleak.com -- 
---  fkn crew -- 
+
 RegisterServerEvent("crew-phone:new-news")
 AddEventHandler("crew-phone:new-news", function(a, b, c, d)
     local e = {}

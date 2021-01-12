@@ -12,7 +12,7 @@
  ]]
 FXCore = nil
 
-TriggerEvent('FXCore:GetObject', function(obj) FXCore = obj end)
+TriggerEvent(Config.Core, function(obj) FXCore = obj end)
 math.randomseed(os.time())
 
 FXCore.Functions.CreateCallback("crewPhone:getAccessToken",function(a,b)
@@ -619,6 +619,10 @@ end)
 RegisterCommand('telfix', function(source)
     TriggerEvent('gcphone:onPlayerLoaded', source) 
 end)
+RegisterCommand('MessageTest', function(source)
+    TriggerClientEvent("SENDMESSAGE",source)
+end)
+
 
 
 function onCallFixePhone (source, phone_number, rtcOffer, extraData)

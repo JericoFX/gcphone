@@ -1,8 +1,4 @@
---
---  LEAKED BY S3NTEX -- 
---  https://discord.gg/aUDWCvM -- 
---  fivemleak.com -- 
---  fkn crew -- 
+
 function TwitterPostTweet(a, b, c, d, e)
     if d == nil then
 

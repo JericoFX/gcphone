@@ -24,8 +24,8 @@ AddEventHandler("gcPhone:faturapayBill", function(a)
                 exports['ghmattimysql']:execute("DELETE from billing WHERE id = @id", {["@id"] = a}, function(i)
                     b.Functions.RemoveMoney("bank", g)
                     h.Functions.AddMoney("bank", g)
-                    TriggerClientEvent("FXCore:Notify", b.PlayerData.source, _U("paying_bill"))
-                    TriggerClientEvent("FXCore:Notify", h.PlayerData.source, _U("payed_bill"))
+                    TriggerClientEvent(Config.CoreNotify, b.PlayerData.source, _U("paying_bill"))
+                    TriggerClientEvent(Config.CoreNotify, h.PlayerData.source, _U("payed_bill"))
                     TriggerClientEvent("gcPhone:updateFaturalar", b.source) end)
             end
         end

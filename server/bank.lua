@@ -14,15 +14,15 @@ AddEventHandler("gcPhone:transfer", function(a, b)
         f = d.PlayerData.money.bank
         zbalance = e.PlayerData.money.bank
         if tonumber(c) == tonumber(a) then
-            TriggerClientEvent("FXCore:Notify", c, _U("send_yourself"))
+            TriggerClientEvent(Config.CoreNotify, c, _U("send_yourself"))
         else
             if f <= 0 or f < tonumber(b) or tonumber(b) <= 0 then
-                TriggerClientEvent("FXCore:Notify", c, _U("send_yourself"))
+                TriggerClientEvent(Config.CoreNotify, c, _U("send_yourself"))
             else
                 d.Functions.RemoveMoney("bank", tonumber(b))
                 e.Functions.AddMoney("bank", tonumber(b))
-                TriggerClientEvent("FXCore:Notify", c, "$" .. b .. _U("bank_sending"))
-                TriggerClientEvent("FXCore:Notify", a, "$" .. b .. _U("bank_incoming"))
+                TriggerClientEvent(Config.CoreNotify, c, "$" .. b .. _U("bank_sending"))
+                TriggerClientEvent(Config.CoreNotify, a, "$" .. b .. _U("bank_incoming"))
                 exports['ghmattimysql']:execute("SELECT * FROM players WHERE steam = @identifier", {["@identifier"] = z}, function(g)
                     if g[1] then
                         
@@ -43,7 +43,7 @@ AddEventHandler("gcPhone:transfer", function(a, b)
             end
         end
    else
-        TriggerClientEvent("FXCore:Notify", c, _U("no_player_id"))
+        TriggerClientEvent(Config.CoreNotify, c, _U("no_player_id"))
     end 
 end)
 FXCore.Functions.CreateCallback("crew-phone:check-bank", function(a, b)

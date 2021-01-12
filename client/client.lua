@@ -45,10 +45,21 @@ FXCore = nil
 
 Citizen.CreateThread(function()
 	while FXCore == nil do
-		TriggerEvent('FXCore:GetObject', function(obj) FXCore = obj end)
+		TriggerEvent(Config.Core, function(obj) FXCore = obj end)
 		Citizen.Wait(200)
   end
 end)
+--#Joe Szymkowicz
+
+Citizen.CreateThread(function()
+  while true do
+      GLOBAL_PED = PlayerPedId()
+      GLOBAL_PLYID = PlayerId()
+      GLOBAL_SRVID = GetPlayerServerId(GLOBAL_PLYID)
+      Wait(5000)
+  end
+end)
+
 
 RegisterNUICallback('getAccessToken', function(data, cb)
   TriggerServerEvent("crew:getPlayerBank")
@@ -106,7 +117,7 @@ Citizen.CreateThread(function()
   while true do
     Citizen.Wait(10)
     if menuIsOpen then
-      playerPed = PlayerPedId()
+      playerPed = GLOBAL_PED
       DisablePlayerFiring(playerPed, true)
       SetPedCanPlayGestureAnims(playerPed, false)
 
@@ -173,7 +184,7 @@ end)
 
 RegisterNetEvent("gcPhone:TgiannSes")
 AddEventHandler("gcPhone:TgiannSes", function(phoneId)
-  if GetPlayerServerId(PlayerId()) == tonumber(phoneId) then
+  if GLOBAL_SRVID == tonumber(phoneId) then
 --[[     FXCore.Functions.TriggerCallback('crew-phone:phone-check', function(durum)
       if durum ~= nil then ]]
         exports["xsound"]:Cal("iphonex.mp3", true)
@@ -399,7 +410,7 @@ AddEventHandler("gcPhone:acceptCall", function(infoCall, initiator)
     inCall = true
     if Config.UsingToko   then
       Config.UsingMumble = false
-    exports['tokovoip_script']:setPlayerData(GetPlayerName(PlayerId()), "call:channel", infoCall.id + 1120.00, true)
+    exports['tokovoip_script']:setPlayerData(GetPlayerName(GLOBAL_PLYID), "call:channel", infoCall.id + 1120.00, true)
 	  exports.tokovoip_script:addPlayerToRadio(infoCall.id + 1120.00)
     TokoVoipID = infoCall.id + 1120.00
   
@@ -423,7 +434,7 @@ AddEventHandler("gcPhone:rejectCall", function(infoCall)
     inCall = false
    if Config.UsingToko   then
     Config.UsingMumble = false
-    exports['tokovoip_script']:setPlayerData(GetPlayerName(PlayerId()), "call:channel", 'nil', true)
+    exports['tokovoip_script']:setPlayerData(GetPlayerName(GLOBAL_PLYID), "call:channel", 'nil', true)
   	exports.tokovoip_script:removePlayerFromRadio(TokoVoipID)
     TokoVoipID = nil
    end
@@ -498,7 +509,7 @@ RegisterNUICallback('notififyUseRTC', function (use, cb)
   if USE_RTC == true and inCall == true then
     inCall = false
     --Citizen.InvokeNative(0xE036A705F989E049)
-    exports['tokovoip_script']:setPlayerData(GetPlayerName(PlayerId()), "call:channel", 'nil', true)
+    exports['tokovoip_script']:setPlayerData(GetPlayerName(GLOBAL_PLYID), "call:channel", 'nil', true)
   	exports.tokovoip_script:removePlayerFromRadio(TokoVoipID)
 	  TokoVoipID = nil
   end
@@ -535,7 +546,7 @@ end)
 
 RegisterNetEvent('gcphone:FixOnLoad')
 AddEventHandler('gcphone:FixOnLoad', function()
-  TriggerServerEvent('gcphone:onPlayerLoaded', GetPlayerServerId((PlayerId())))
+  TriggerServerEvent('gcphone:onPlayerLoaded', GLOBAL_SRVID)
 end)
 
 --====================================================================================
@@ -579,7 +590,7 @@ end)
 
 RegisterNUICallback('sendMessage', function(data, cb)
   if data.message == '%pos%' then
-    local myPos = GetEntityCoords(PlayerPedId())
+    local myPos = GetEntityCoords(GLOBAL_PED)
     data.message = 'GPS: ' .. myPos.x .. ', ' .. myPos.y
   end
   TriggerServerEvent('gcPhone:sendMessage', data.phoneNumber, data.message)
@@ -689,17 +700,22 @@ end)
 ----------------------------------
 ---------- GESTION VIA WEBRTC ----
 ----------------------------------
---[[ AddEventHandler('onResourceStart', function(resource)
-  if resource == GetCurrentResourceName() then
-    TriggerServerEvent('crew:onPlayerLoaded', GetPlayerServerId(PlayerId()))
-  end
-end) ]]
+-- AddEventHandler('onResourceStart', function(resource)
+--  if resource == GetCurrentResourceName() then
+--
+--  end
+--end)
 
 RegisterNUICallback('setIgnoreFocus', function (data, cb)
   ignoreFocus = data.ignoreFocus
   cb()
 end)
+RegisterNetEvent("SENDMESSAGE")
+AddEventHandler("SENDMESSAGE",function()
+  TriggerServerEvent('gcPhone:sendMessage', "555641", "Hey")
 
+
+end)
 RegisterNUICallback('takePhoto', function(data, cb)
 	CreateMobilePhone(1)
   CellCamActivate(true, true)

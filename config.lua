@@ -29,7 +29,8 @@ FixePhone = {
 }
 
 ShowNumberNotification = true 
-
+Config.Core = "FXCore:GetObject"
+Config.CoreNotify = "FXCore:Notify"
 Config.UsingMumble = true
 Config.UsingToko = false
 Config.newsJobName = "reporter"
