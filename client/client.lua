@@ -306,6 +306,7 @@ AddEventHandler("gcPhone:receiveMessage", function(message)
       if durum ~= nil then ]]
         local text = _U('new_one_message')
         if ShowNumberNotification == true then
+
           if message.transmitter == "police" or message.transmitter == "ambulance" then
             text = message.transmitter.. _U('new_message_hotline')
           else
@@ -319,7 +320,7 @@ AddEventHandler("gcPhone:receiveMessage", function(message)
           end
         end
 
-
+        FXCore.Functions.Notify(text,"success",5000)
         PlaySound(-1, "Menu_Accept", "Phone_SoundSet_Default", 0, 0, 1)
         Citizen.Wait(300)
         PlaySound(-1, "Menu_Accept", "Phone_SoundSet_Default", 0, 0, 1)
