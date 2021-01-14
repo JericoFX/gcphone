@@ -23,18 +23,18 @@ AddEventHandler("gcPhone:faturapayBill", function(a)
                     h.Functions.AddMoney("bank", g)
                     TriggerClientEvent(Config.CoreNotify, b.PlayerData.source, _U("paying_bill"))
                     TriggerClientEvent(Config.CoreNotify, h.PlayerData.source, _U("payed_bill"))
-                    TriggerClientEvent("gcPhone:updateFaturalar", b.source) end)
+                    TriggerClientEvent("gcPhone:updateFaturalar", b.PlayerData.source) end)
             end
         end
         end
     end)
 end)
 
-RegisterServerEvent('gcPhone_billing:sendBill')
+RegisterServerEvent('gcPhone_billing:sendBill') --# CREDITS TO ESX BILLING
 AddEventHandler('gcPhone_billing:sendBill', function(playerId, label, amount)
     local xPlayer = FXCore.Functions.GetPlayer(source)
     local xTarget = FXCore.Functions.GetPlayer(playerId)
-    if amount > 0 and xTarget then
+    if amount > 0 and xTarget  then
         exports['ghmattimysql']:execute('INSERT INTO billing (identifier, sender, target_type, target, label, amount) VALUES (@identifier, @sender, @target_type, @target, @label, @amount)', {
                     ['@identifier'] = xTarget.PlayerData.steam,
                     ['@sender'] = xPlayer.PlayerData.steam,
@@ -43,7 +43,26 @@ AddEventHandler('gcPhone_billing:sendBill', function(playerId, label, amount)
                     ['@label'] = label,
                     ['@amount'] = amount
                 }, function(rowsChanged)
-                    TriggerClientEvent(Core.Notify,xTarget.PlayerData.source,"ENVOICE RECIVED")
+                    TriggerClientEvent(Config.CoreNotify,xTarget.PlayerData.source,"INVOICE RECEIVED")
                 end)
     end
+end)
+
+FXCore.Commands.Add("billmenu", "Factura Menu", {}, false, function(source, args)
+    TriggerClientEvent('jerico:factura',source)
+end)
+
+
+FXCore.Functions.CreateCallback("crew:getBillsByPlayer", function(source, b,a)
+    local elements = {}
+    local c = FXCore.Functions.GetPlayer(a)
+    exports['ghmattimysql']:execute("SELECT amount, id, target, label FROM billing WHERE identifier = @identifier", {["@identifier"] = c.PlayerData.steam}, function(d)
+        if d[1] ~= nil then
+            table.insert(elements,{label = d[1].label,amount = d[1].amount})
+            b(elements)
+        else
+            table.insert(elements,{label = "BILLS NOT FOUND",amount = 0})
+            b(elements)
+        end
+    end)
 end)

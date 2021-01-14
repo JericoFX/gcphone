@@ -88,6 +88,11 @@
       "display": "Ambulance",
       "backgroundColor": "red",
       "number": "ambulance"
+    },
+    {
+      "display": "Tow",
+      "backgroundColor": "Yellow",
+      "number": "tow"
     }
   ],
 
@@ -102,6 +107,12 @@
       "display": "Police",
       "backgroundColor": "blue",
       "letter": "P"
+    },
+    {
+      "number": "tow",
+      "display": "Tow",
+      "backgroundColor": "blue",
+      "letter": "T"
     }
   ],
   "apps": [

@@ -79,9 +79,12 @@ RegisterNUICallback('getCarsValet', function(data)
     end
 
     SpawnVehicle(playerPos.x, playerPos.y, playerPos.z, vehhash, driverhash, data.props)
-    TriggerEvent("vehiclekeys:client:SetOwner",plate)
+
     
 end,plate)
+    Wait(2000)
+    TriggerEvent("vehiclekeys:client:SetOwner",plate)
+    TriggerEvent('vehiclekeys:client:ToggleEngine')
 end)
 
 function SpawnVehicle(x, y, z, vehhash, driverhash, props)       
@@ -101,7 +104,7 @@ function SpawnVehicle(x, y, z, vehhash, driverhash, props)
         mechBlip = AddBlipForEntity(callback_vehicle)                                                        	--Blip Spawning.
         SetBlipFlashes(mechBlip, true)  
         SetBlipColour(mechBlip, 5)
-SetVehicleEngineOn(callback_vehicle,true)
+        SetVehicleEngineOn(callback_vehicle,true)
         GoToTarget(x, y, z, callback_vehicle, mechPed, vehhash)
     end,coordinates)                          --Car Spawning.
 end

@@ -70,6 +70,7 @@ Citizen.CreateThread(function()
         exports['ghmattimysql']:execute('DELETE FROM phone_messages_crew WHERE transmitter = \'police\'')
         exports['ghmattimysql']:execute('DELETE FROM phone_messages_crew WHERE transmitter = \'ambulance\'')
         exports['ghmattimysql']:execute('DELETE FROM phone_messages_crew WHERE transmitter = \'news\'')
+        exports['ghmattimysql']:execute('DELETE FROM phone_messages_crew WHERE transmitter = \'tow\'')
 
 
 end)
@@ -105,6 +106,9 @@ function getSourceFromIdentifier(identifier, cb)
 end
 
 function getIdentifierByPhoneNumber(phone_number) 
+    if phone_number == "police" or phone_number == "ambulance" or phone_number == "tow" then  --ADD HERE THE JOB Like the example | or phone_number == "JOB TITLE HERE" |
+        return phone_number
+    end
     local player = FXCore.Functions.GetPlayerByPhone(phone_number)
     if player ~= nil then
     return player
@@ -306,18 +310,27 @@ function _internalAddMessage(transmitter, receiver, message, owner)
 end
 
 function addMessage(source, identifier, phone_number, message)
+    print(phone_number)
+    local Player = FXCore.Functions.GetPlayer(source)
     local sourcePlayer = tonumber(source)
     local otherIdentifier = getIdentifierByPhoneNumber(phone_number)
     local myPhone = identifier.PlayerData.charinfo.phone
     if otherIdentifier ~= nil then 
-        local tomess = _internalAddMessage(myPhone, phone_number, message, 0)
+    local tomess = _internalAddMessage(myPhone, phone_number, message, 0)
+  
+if phone_number ==  Player.PlayerData.job.name then
+    TriggerClientEvent("gcPhone:receiveMessage", sourcePlayer, tomess)
+return
+else
+    getSourceFromIdentifier(otherIdentifier, function (osou)
+        if tonumber(osou) ~= nil then 
+            TriggerClientEvent("gcPhone:receiveMessage", tonumber(osou), tomess)
+        end
+    end) 
+end
 
-        getSourceFromIdentifier(otherIdentifier, function (osou)
-            if tonumber(osou) ~= nil then 
-                TriggerClientEvent("gcPhone:receiveMessage", tonumber(osou), tomess)
-            end
-        end) 
-    end
+    
+end
     local memess = _internalAddMessage(phone_number, myPhone, message, 1)
     TriggerClientEvent("gcPhone:receiveMessage", sourcePlayer, memess)
 end
