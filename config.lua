@@ -21,6 +21,7 @@ Config.Phones       = {
 Config.Discord = "https://discord.com/api/webhooks/728087109339971665/E2VxCqDqQRVUAvYg9wPbBdmzMTe9NPuPuLWy-_8d_ktWBV-ohPREEdcChkSCbGY7lnnY"
 Config.FourDigit = false
 Config.BillJobs = {"police","mechanic"}
+Config.SMSJobs = {"police","mechanic"}
 FixePhone = {
 
   ['911'] = { name =  "Central Police", coords = { x = 441.2, y = -979.7, z = 30.58 } },

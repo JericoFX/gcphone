@@ -24,6 +24,8 @@ AddEventHandler("gcphone:onPlayerLoaded",function(source)
     
     local b=tonumber(source)
     local c=getPlayerID(b)
+  --  print(c.PlayerData.charinfo.phone)
+    TriggerEvent('FXIndex', b)
    TriggerClientEvent("crew:updatePhone1",source)
 Wait(2000)
 
@@ -92,10 +94,21 @@ end
 
 --====================================================================================
 --  Utils
---====================================================================================
-function getSourceFromIdentifier(identifier, cb)
+--====================================================================================+
+function GetJob(identifier, cb)
     local xPlayers = FXCore.Functions.GetPlayers()
 
+    for k, user in pairs(xPlayers) do
+        local jugador = FXCore.Functions.GetPlayer(user)
+        if jugador.PlayerData.job.name == identifier.PlayerData.job.name then
+            cb(user)
+            return
+        end
+    end
+    cb(nil)
+end
+function getSourceFromIdentifier(identifier, cb)
+    local xPlayers = FXCore.Functions.GetPlayers()
     for k, user in pairs(xPlayers) do
         if GetPlayerIdentifiers(user)[1] == identifier.PlayerData.steam then
             cb(user)
@@ -106,9 +119,7 @@ function getSourceFromIdentifier(identifier, cb)
 end
 
 function getIdentifierByPhoneNumber(phone_number) 
-    if phone_number == "police" or phone_number == "ambulance" or phone_number == "tow" then  --ADD HERE THE JOB Like the example | or phone_number == "JOB TITLE HERE" |
-        return phone_number
-    end
+ 
     local player = FXCore.Functions.GetPlayerByPhone(phone_number)
     if player ~= nil then
     return player
@@ -308,29 +319,71 @@ function _internalAddMessage(transmitter, receiver, message, owner)
     local data = {message = message, time = tonumber(os.time().."000.0"), receiver = receiver, transmitter = transmitter, owner = owner, isRead = owner}
     return data
 end
+function GetPlayerByJob(callback)
+    xPlayers = FXCore.Functions.GetPlayers()
 
+    for k,v in ipairs(xPlayers) do
+        local Player = FXCore.Functions.GetPlayer(v)
+        for j,l in ipairs(Config.SMSJobs) do
+            if Player.PlayerData.job.name == l then
+                callback(true)
+            else
+                print("NOPPP")
+            end
+
+
+            end
+
+
+
+    end
+
+
+
+end
 function addMessage(source, identifier, phone_number, message)
     print(phone_number)
-    local Player = FXCore.Functions.GetPlayer(source)
+    --local Player = FXCore.Functions.GetPlayer(source)
     local sourcePlayer = tonumber(source)
     local otherIdentifier = getIdentifierByPhoneNumber(phone_number)
     local myPhone = identifier.PlayerData.charinfo.phone
-    if otherIdentifier ~= nil then 
-    local tomess = _internalAddMessage(myPhone, phone_number, message, 0)
-  
-if phone_number ==  Player.PlayerData.job.name then
-    TriggerClientEvent("gcPhone:receiveMessage", sourcePlayer, tomess)
-return
-else
-    getSourceFromIdentifier(otherIdentifier, function (osou)
-        if tonumber(osou) ~= nil then 
-            TriggerClientEvent("gcPhone:receiveMessage", tonumber(osou), tomess)
+    xPlayers = FXCore.Functions.GetPlayers()
+    for k,v in ipairs(xPlayers) do
+
+        local Player = FXCore.Functions.GetPlayer(v)
+        for j,l in ipairs(Config.SMSJobs) do
+            if phone_number == l then
+             if Player.PlayerData.job.name == l then
+                 local tomess = _internalAddMessage(myPhone, phone_number, message, 0)
+                 TriggerClientEvent("gcPhone:receiveMessage", tonumber(source), tomess)
+
+
+
+            else
+                 if otherIdentifier ~= nil then
+                     local tomess = _internalAddMessage(myPhone, phone_number, message, 0)
+                     getSourceFromIdentifier(otherIdentifier, function (osou)
+                         if tonumber(osou) ~= nil then
+                             TriggerClientEvent("gcPhone:receiveMessage", tonumber(osou), tomess)
+                             print("NORMAL NUMBER")
+                         end
+                     end)
+                 end
+            end
+
+
         end
-    end) 
-end
+        end
+
+
+    end
+
+
+
+
 
     
-end
+
     local memess = _internalAddMessage(phone_number, myPhone, message, 1)
     TriggerClientEvent("gcPhone:receiveMessage", sourcePlayer, memess)
 end
