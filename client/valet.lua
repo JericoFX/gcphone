@@ -54,20 +54,10 @@ RegisterNUICallback('getCarsValet', function(data)
     end
 
     TriggerServerEvent("gcPhone:valet-car-set-outside", data.props.plate)
-
-
-   
-
-   
-     --[[ = data.props.model ]]
-  
-    
         local driverhash = 999748158
         local player = PlayerPedId()
         local playerPos = GetEntityCoords(player)
-
-
-         if vehicle ~= nil then
+      if vehicle ~= nil then
              vehhash = vehicle
  
          end
@@ -77,10 +67,7 @@ RegisterNUICallback('getCarsValet', function(data)
         RequestModel(vehhash)
         Citizen.Wait(0)
     end
-
     SpawnVehicle(playerPos.x, playerPos.y, playerPos.z, vehhash, driverhash, data.props)
-
-    
 end,plate)
     Wait(2000)
     TriggerEvent("vehiclekeys:client:SetOwner",plate)

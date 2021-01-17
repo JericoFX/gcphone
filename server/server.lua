@@ -14,7 +14,7 @@ FXCore = nil
 
 TriggerEvent(Config.Core, function(obj) FXCore = obj end)
 math.randomseed(os.time())
-
+local JobPlayer = {}
 FXCore.Functions.CreateCallback("crewPhone:getAccessToken",function(a,b)
     b(________)
 end)
@@ -25,13 +25,24 @@ AddEventHandler("gcphone:onPlayerLoaded",function(source)
     local b=tonumber(source)
     local c=getPlayerID(b)
   --  print(c.PlayerData.charinfo.phone)
-    TriggerEvent('FXIndex', b)
    TriggerClientEvent("crew:updatePhone1",source)
 Wait(2000)
 
    getUserTwitterAccount(b,c)
 
 end)
+RegisterServerEvent("gcphone:AddJobSource")
+AddEventHandler("gcphone:AddJobSource",function(source)
+
+    local b=tonumber(source)
+    local c=getPlayerID(b)
+    table.insert(JobPlayer,{name = c,job = c.PlayerData.job.name})
+
+
+end)
+
+
+
 FXCore.Functions.CreateCallback('crew-phone:phone-contacts', function(source, cb)
     local xPlayer = FXCore.Functions.GetPlayer(source)
     if not xPlayer then return; end
@@ -319,28 +330,7 @@ function _internalAddMessage(transmitter, receiver, message, owner)
     local data = {message = message, time = tonumber(os.time().."000.0"), receiver = receiver, transmitter = transmitter, owner = owner, isRead = owner}
     return data
 end
-function GetPlayerByJob(callback)
-    xPlayers = FXCore.Functions.GetPlayers()
 
-    for k,v in ipairs(xPlayers) do
-        local Player = FXCore.Functions.GetPlayer(v)
-        for j,l in ipairs(Config.SMSJobs) do
-            if Player.PlayerData.job.name == l then
-                callback(true)
-            else
-                print("NOPPP")
-            end
-
-
-            end
-
-
-
-    end
-
-
-
-end
 function addMessage(source, identifier, phone_number, message)
     print(phone_number)
     --local Player = FXCore.Functions.GetPlayer(source)
@@ -355,11 +345,8 @@ function addMessage(source, identifier, phone_number, message)
             if phone_number == l then
              if Player.PlayerData.job.name == l then
                  local tomess = _internalAddMessage(myPhone, phone_number, message, 0)
-                 TriggerClientEvent("gcPhone:receiveMessage", tonumber(source), tomess)
-
-
-
-            else
+                 TriggerClientEvent("gcPhone:receiveMessage", Player.PlayerData.source, tomess)
+                else
                  if otherIdentifier ~= nil then
                      local tomess = _internalAddMessage(myPhone, phone_number, message, 0)
                      getSourceFromIdentifier(otherIdentifier, function (osou)
@@ -683,7 +670,7 @@ end)
 --====================================================================================
 
 RegisterCommand('telfix', function(source)
-    TriggerEvent('gcphone:onPlayerLoaded', source) 
+    TriggerClientEvent('gcphone:FixOnLoad', source)
 end)
 RegisterCommand('MessageTest', function(source)
     TriggerClientEvent("SENDMESSAGE",source)

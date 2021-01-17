@@ -114,12 +114,13 @@ end)
 
 
 Citizen.CreateThread(function()
+  local playerPed = PlayerPedId()
   while true do
     Citizen.Wait(10)
     if menuIsOpen then
-      playerPed = GLOBAL_PED
-      DisablePlayerFiring(playerPed, true)
-      SetPedCanPlayGestureAnims(playerPed, false)
+
+      DisablePlayerFiring(GLOBAL_PED, true)
+      SetPedCanPlayGestureAnims(GLOBAL_PED, false)
 
       DisableControlAction(0, 24, true) -- Attack
       DisableControlAction(0, 257, true) -- Attack 2
@@ -221,20 +222,6 @@ end)
 --====================================================================================
 --  Events
 --====================================================================================
-RegisterNetEvent('crew:updatePhone')
-AddEventHandler('crew:updatePhone', function(source,  _contacts, allmessages)
-
-
- 
-
-
- 
-
- 
-
-  
-
-end)
 
 RegisterNetEvent('crew:updatePhone1')
 AddEventHandler('crew:updatePhone1', function(source)
@@ -301,6 +288,7 @@ RegisterNetEvent("gcPhone:receiveMessage")
 AddEventHandler("gcPhone:receiveMessage", function(message)
   SendNUIMessage({event = 'newMessage', message = message})
   table.insert(messages, message)
+  print(message.owner)
   if message.owner == 0 then
    --[[  FXCore.Functions.TriggerCallback('crew-phone:phone-check', function(durum)
       if durum ~= nil then ]]
@@ -547,7 +535,9 @@ end)
 
 RegisterNetEvent('gcphone:FixOnLoad')
 AddEventHandler('gcphone:FixOnLoad', function()
+  TriggerServerEvent('gcphone:AddJobSource', GLOBAL_SRVID)
   TriggerServerEvent('gcphone:onPlayerLoaded', GLOBAL_SRVID)
+
 end)
 
 --====================================================================================
@@ -741,6 +731,7 @@ RegisterNUICallback('takePhoto', function(data, cb)
     elseif IsControlJustPressed(1, 176) then -- TAKE.. PIC
       if Config.Discord == nil or Config.Discord and Config.Discord == "" then
         print("YOU NEED TO PUT THE WEBHOOK IN THE CONFIG NOW!")
+        return
       else
       exports['screenshot-basic']:requestScreenshotUpload(Config.Discord, "files[]", function(data)
         local image = json.decode(data)
