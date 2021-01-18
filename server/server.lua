@@ -332,7 +332,7 @@ function _internalAddMessage(transmitter, receiver, message, owner)
 end
 
 function addMessage(source, identifier, phone_number, message)
-    print(phone_number)
+   
     --local Player = FXCore.Functions.GetPlayer(source)
     local sourcePlayer = tonumber(source)
     local otherIdentifier = getIdentifierByPhoneNumber(phone_number)
@@ -344,28 +344,33 @@ function addMessage(source, identifier, phone_number, message)
         for j,l in ipairs(Config.SMSJobs) do
             if phone_number == l then
              if Player.PlayerData.job.name == l then
-                 local tomess = _internalAddMessage(myPhone, phone_number, message, 0)
+              
+                local tomess = _internalAddMessage(myPhone, phone_number, message, 0)
+             --   local mymensaje = _internalAddMessage(myPhone, phone_number, message, 0)
                  TriggerClientEvent("gcPhone:receiveMessage", Player.PlayerData.source, tomess)
-                else
-                 if otherIdentifier ~= nil then
-                     local tomess = _internalAddMessage(myPhone, phone_number, message, 0)
-                     getSourceFromIdentifier(otherIdentifier, function (osou)
-                         if tonumber(osou) ~= nil then
-                             TriggerClientEvent("gcPhone:receiveMessage", tonumber(osou), tomess)
-                             print("NORMAL NUMBER")
-                         end
-                     end)
-                 end
+                -- TriggerClientEvent("gcPhone:receiveMessage", Player.PlayerData.source, mymensaje)
+             end
+                 
             end
 
 
         end
-        end
+        
 
-
+       
     end
+    
 
+    if otherIdentifier ~= nil then
+        print("from "..myPhone.." to "..phone_number)
+        local tomess = _internalAddMessage(myPhone, phone_number, message, 0)
+        getSourceFromIdentifier(otherIdentifier, function (osou)
+            if tonumber(osou) ~= nil then
+                TriggerClientEvent("gcPhone:receiveMessage", tonumber(osou), tomess)
 
+            end
+        end)
+    end
 
 
 
