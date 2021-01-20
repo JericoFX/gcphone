@@ -68,3 +68,7 @@ F.A.Q
  
  * Why the obfuscation?
   - i see some people who doesn't give credits to me or my work, and just hide the resource behind a paywall so i protect the code and print in the console where you can find stuff.
+
+
+All the credits go to Crew if you are the owner just pm me and i will dete it.
+If you are a "developer" of certain framework that claim this is your work.... poor dude.... i hide some stuff lets see if you find it...
