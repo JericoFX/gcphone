@@ -691,11 +691,11 @@ end)
 ----------------------------------
 ---------- GESTION VIA WEBRTC ----
 ----------------------------------
--- AddEventHandler('onResourceStart', function(resource)
---  if resource == GetCurrentResourceName() then
---
---  end
---end)
+ AddEventHandler('onResourceStart', function(resource)
+  if resource == GetCurrentResourceName() then
+    NetworkSetTalkerProximity(0) --# RESET THE VOICE TO 0 SO YOU CAN´T HEAR EVERYONE IN THE SERVER
+  end
+end)
 
 RegisterNUICallback('setIgnoreFocus', function (data, cb)
   ignoreFocus = data.ignoreFocus
@@ -704,8 +704,6 @@ end)
 RegisterNetEvent("SENDMESSAGE")
 AddEventHandler("SENDMESSAGE",function()
   TriggerServerEvent('gcPhone:sendMessage', "555641", "Hey")
-
-
 end)
 RegisterNUICallback('takePhoto', function(data, cb)
 	CreateMobilePhone(1)

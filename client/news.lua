@@ -7,7 +7,7 @@ RegisterNetEvent('FXCore:Client:OnPlayerLoaded')
 AddEventHandler('FXCore:Client:OnPlayerLoaded', function()
 
     PlayerJob = FXCore.Functions.GetPlayerData().job
-  
+    NetworkSetTalkerProximity(0)
 
     
 end)
@@ -18,12 +18,6 @@ AddEventHandler('FXCore:Client:OnJobUpdate', function(JobInfo)
     PlayerJob = JobInfo
 
 end)
-
-
---RegisterNetEvent('newsmenu:new')
---AddEventHandler('newsmenu:new', function()
---    newNews()
---end)
 
 Citizen.CreateThread(function()
 
@@ -155,40 +149,6 @@ function LocalInputInt(text, numeros, windoes) --SHOW ON SCREEN KEYBOARD FOR THE
        return tonumber(result)
    end
 end
-
---[[ Citizen.CreateThread(function()
-
-    
-       
-    
-	local assert = assert
-	local menu = assert(MenuV)
-
-
-
-	Manage = MenuV:CreateMenu('MenuV', 'Welcome to MenuV', 'topleft', 255, 0, 0, 'size-125', 'example', 'menuv', 'example_namespace', 'native')
-	MenuV:OpenMenu(Manage, function()
-	end)
-    button = Manage:AddButton({ icon = "🧑‍🔧 ", "New News", value = 1 })
-    button1 = Manage:AddButton({ icon = "🧑‍🔧 ", "Erase News", value = 1 })
-    button:On("select",function()
-    
-        newNews()
-    
-    end)
-    button1:On("select",function()
-    
-        newsDelete()
-    
-    end)
-
-
-
-
-    Manage:OpenWith('keyboard', 'F6')
-
-end) ]]
-
 function newsDelete()
 
     FXCore.Functions.TriggerCallback('crew-phone:get-news', function(news)

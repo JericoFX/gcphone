@@ -20,11 +20,19 @@ AddEventHandler("gcPhone:faturapayBill", function(a)
             if b.PlayerData.money.bank >= g then
                 exports['ghmattimysql']:execute("DELETE from billing WHERE id = @id", {["@id"] = a}, function(i)
                     b.Functions.RemoveMoney("bank", g)
-                    h.Functions.AddMoney("bank", g)
+                    local h1 = b.PlayerData.charinfo.firstname .. " " .. b.PlayerData.charinfo.lastname
+                  --  h.Functions.AddMoney("bank", g)
+                  --  local h2 = ;
                     TriggerClientEvent(Config.CoreNotify, b.PlayerData.source, _U("paying_bill"))
                     TriggerClientEvent(Config.CoreNotify, h.PlayerData.source, _U("payed_bill"))
-                    TriggerClientEvent("gcPhone:updateFaturalar", b.PlayerData.source) end)
-            end
+                    TriggerClientEvent("gcPhone:updateFaturalar", b.PlayerData.source)
+
+
+                end)
+               -- TriggerClientEvent("crew:crew-phone:bankmoney",source,b.PlayerData.money.bank)
+                exports['ghmattimysql']:execute("INSERT INTO crew_phone_bank (type, identifier, price, name) VALUES (@type, @identifier, @price, @name)", {["@type"] = 2, ["@identifier"] = b.PlayerData.steam, ["@price"] = g, ["@name"] = h.PlayerData.charinfo.firstname .. " " .. h.PlayerData.charinfo.lastname})
+                TriggerClientEvent("crewPhone:updateHistory", h.PlayerData.source)
+                end
         end
         end
     end)
