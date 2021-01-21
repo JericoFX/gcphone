@@ -58,6 +58,6 @@ FXCore.Functions.CreateCallback("crew-phone:check-bank-money", function(a, b)
     local d = FXCore.Functions.GetPlayer(c)
     exports['ghmattimysql']:execute("SELECT * FROM crew_phone_bank WHERE identifier = @identifier ORDER BY time DESC LIMIT 5", {["@identifier"] = d.PlayerData.steam}, function(e)
         b(e)
-        end)
+    end)
 end)
 
