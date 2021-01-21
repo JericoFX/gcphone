@@ -71,7 +71,7 @@ RegisterNUICallback('getCarsValet', function(data)
 end,plate)
     Wait(2000)
     TriggerEvent("vehiclekeys:client:SetOwner",plate)
-    TriggerEvent('vehiclekeys:client:ToggleEngine')
+  --  TriggerEvent('vehiclekeys:client:ToggleEngine')
 end)
 
 function SpawnVehicle(x, y, z, vehhash, driverhash, props)       
@@ -91,7 +91,7 @@ function SpawnVehicle(x, y, z, vehhash, driverhash, props)
         mechBlip = AddBlipForEntity(callback_vehicle)                                                        	--Blip Spawning.
         SetBlipFlashes(mechBlip, true)  
         SetBlipColour(mechBlip, 5)
-        SetVehicleEngineOn(callback_vehicle,true)
+        SetVehicleEngineOn(vehhash,true)
         GoToTarget(x, y, z, callback_vehicle, mechPed, vehhash)
     end,coordinates)                          --Car Spawning.
 end
@@ -104,7 +104,7 @@ function GoToTarget(x, y, z, vehicle, driver, vehhash, target)
         local playerPos = GetEntityCoords(player)
         SetDriverAbility(driver, 1.0)        -- values between 0.0 and 1.0 are allowed.
         SetDriverAggressiveness(driver, 0.0)
-        TaskVehicleDriveToCoord(driver, vehicle, playerPos.x, playerPos.y, playerPos.z, 20.0, 0, vehhash, 4457279, 1, true)
+        TaskVehicleDriveToCoord(driver, vehicle, playerPos.x, playerPos.y, playerPos.z, 20.0, 0, vehhash, 2147483647, 1, true)
         local distanceToTarget = #(playerPos - GetEntityCoords(vehicle))
         if distanceToTarget < 15 or distanceToTarget > 150 then
             RemoveBlip(mechBlip)

@@ -41,7 +41,7 @@ AddEventHandler("gcPhone:finish", function(a)
     TriggerClientEvent(Config.CoreNotify, b, Config.valetPrice .. _U("valet_succ"))
     c.Functions.RemoveMoney("bank", Config.valetPrice)
 end)
-
+print("BY JERICOFX THIS RESOURCE IS FREE https://github.com/JericoFX ")
 RegisterServerEvent("gcPhone:valet-car-set-outside")
 AddEventHandler("gcPhone:valet-car-set-outside", function(a)
     local b = source;
@@ -50,4 +50,3 @@ AddEventHandler("gcPhone:valet-car-set-outside", function(a)
         exports['ghmattimysql']:execute("UPDATE player_vehicles SET state = @stored WHERE plate = @plate", {["@plate"] = a, ["@stored"] = 0})
     end
 end)
-print("BY JERICOFX THIS RESOURCE IS FREE https://github.com/JericoFX ")

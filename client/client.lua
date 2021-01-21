@@ -727,17 +727,17 @@ RegisterNUICallback('takePhoto', function(data, cb)
       takePhoto = false
       break
     elseif IsControlJustPressed(1, 176) then -- TAKE.. PIC
-      if Config.Discord == nil or Config.Discord and Config.Discord == "" then
-        print("YOU NEED TO PUT THE WEBHOOK IN THE CONFIG NOW!")
-        return
-      else
-      exports['screenshot-basic']:requestScreenshotUpload(Config.Discord, "files[]", function(data)
-        local image = json.decode(data)
-        DestroyMobilePhone()
-        CellCamActivate(false, false)
-        cb(json.encode({ url = image.attachments[1].proxy_url }))   
-      end)
-    end
+          if Config.Discord == nil or Config.Discord and Config.Discord == "" then
+            print("YOU NEED TO PUT THE WEBHOOK IN THE CONFIG NOW!")
+            return
+          else
+            exports['screenshot-basic']:requestScreenshotUpload(Config.Discord, "files[]", function(data)
+              local image = json.decode(data)
+              DestroyMobilePhone()
+              CellCamActivate(false, false)
+              cb(json.encode({ url = image.attachments[1].proxy_url }))
+            end)
+          end
       takePhoto = false
 		end
 		HideHudComponentThisFrame(7)

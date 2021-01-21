@@ -334,50 +334,50 @@ end
 function addMessage(source, identifier, phone_number, message)
    
     --local Player = FXCore.Functions.GetPlayer(source)
-    local sourcePlayer = tonumber(source)
-    local otherIdentifier = getIdentifierByPhoneNumber(phone_number)
-    local myPhone = identifier.PlayerData.charinfo.phone
-    xPlayers = FXCore.Functions.GetPlayers()
-    for k,v in ipairs(xPlayers) do
+	local sourcePlayer    = tonumber(source)
+	local otherIdentifier = getIdentifierByPhoneNumber(phone_number)
+	local myPhone         = identifier.PlayerData.charinfo.phone
+	xPlayers              = FXCore.Functions.GetPlayers()
+	for k, v in ipairs(xPlayers) do
 
-        local Player = FXCore.Functions.GetPlayer(v)
-        for j,l in ipairs(Config.SMSJobs) do
-            if phone_number == l then
-             if Player.PlayerData.job.name == l then
-              
-                local tomess = _internalAddMessage(myPhone, phone_number, message, 0)
-             --   local mymensaje = _internalAddMessage(myPhone, phone_number, message, 0)
-                 TriggerClientEvent("gcPhone:receiveMessage", Player.PlayerData.source, tomess)
-                -- TriggerClientEvent("gcPhone:receiveMessage", Player.PlayerData.source, mymensaje)
-             end
-                 
+		local Player = FXCore.Functions.GetPlayer(v)
+		for j, l in ipairs(Config.SMSJobs) do
+			if phone_number == l then
+				if Player.PlayerData.job.name == l then
+
+					local tomess = _internalAddMessage(myPhone, phone_number, message, 0)
+					--   local mymensaje = _internalAddMessage(myPhone, phone_number, message, 0)
+					TriggerClientEvent("gcPhone:receiveMessage", Player.PlayerData.source, tomess)
+					-- TriggerClientEvent("gcPhone:receiveMessage", Player.PlayerData.source, mymensaje)
+				end
+
+				local memess = _internalAddMessage(phone_number, myPhone, message, 1)
+				TriggerClientEvent("gcPhone:receiveMessage", sourcePlayer, memess)
+			else
+
+				if otherIdentifier ~= nil then
+					print("from "..myPhone.." to "..phone_number)
+					local tomess = _internalAddMessage(myPhone, phone_number, message, 0)
+					getSourceFromIdentifier(otherIdentifier, function (osou)
+						if tonumber(osou) ~= nil then
+							TriggerClientEvent("gcPhone:receiveMessage", tonumber(osou), tomess)
+
+						end
+					end)
+					local memess = _internalAddMessage(phone_number, myPhone, message, 1)
+					TriggerClientEvent("gcPhone:receiveMessage", sourcePlayer, memess)
+				end
+
+
             end
 
 
         end
-        
 
-       
-    end
-    
 
-    if otherIdentifier ~= nil then
-        print("from "..myPhone.." to "..phone_number)
-        local tomess = _internalAddMessage(myPhone, phone_number, message, 0)
-        getSourceFromIdentifier(otherIdentifier, function (osou)
-            if tonumber(osou) ~= nil then
-                TriggerClientEvent("gcPhone:receiveMessage", tonumber(osou), tomess)
-
-            end
-        end)
     end
 
 
-
-    
-
-    local memess = _internalAddMessage(phone_number, myPhone, message, 1)
-    TriggerClientEvent("gcPhone:receiveMessage", sourcePlayer, memess)
 end
 
 function setReadMessageNumber(identifier, num)

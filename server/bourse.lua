@@ -1,8 +1,4 @@
---
---  LEAKED BY S3NTEX -- 
---  https://discord.gg/aUDWCvM -- 
---  fivemleak.com -- 
---  fkn crew -- 
+
 FXCore.Functions.CreateCallback("gcPhone:getCrypto",function(a,b,c)
     local d=FXCore.Functions.Getplayer(a)
     if not d then 
