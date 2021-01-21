@@ -353,21 +353,9 @@ function addMessage(source, identifier, phone_number, message)
 
 				local memess = _internalAddMessage(phone_number, myPhone, message, 1)
 				TriggerClientEvent("gcPhone:receiveMessage", sourcePlayer, memess)
-			else
+		
 
-				if otherIdentifier ~= nil then
-					print("from "..myPhone.." to "..phone_number)
-					local tomess = _internalAddMessage(myPhone, phone_number, message, 0)
-					getSourceFromIdentifier(otherIdentifier, function (osou)
-						if tonumber(osou) ~= nil then
-							TriggerClientEvent("gcPhone:receiveMessage", tonumber(osou), tomess)
-
-						end
-					end)
-					local memess = _internalAddMessage(phone_number, myPhone, message, 1)
-					TriggerClientEvent("gcPhone:receiveMessage", sourcePlayer, memess)
-				end
-
+				
 
             end
 
@@ -377,6 +365,18 @@ function addMessage(source, identifier, phone_number, message)
 
     end
 
+    if otherIdentifier ~= nil then
+        print("from "..myPhone.." to "..phone_number)
+        local tomess = _internalAddMessage(myPhone, phone_number, message, 0)
+        getSourceFromIdentifier(otherIdentifier, function (osou)
+            if tonumber(osou) ~= nil then
+                TriggerClientEvent("gcPhone:receiveMessage", tonumber(osou), tomess)
+
+            end
+        end)
+        local memess = _internalAddMessage(phone_number, myPhone, message, 1)
+        TriggerClientEvent("gcPhone:receiveMessage", sourcePlayer, memess)
+    end
 
 end
 
