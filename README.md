@@ -12,13 +12,17 @@ Take from the original resource and modified to work with Qbus based servers.
 
 # ALL MY SCRIPT ARE FREE AND OPENSOURCE.
 
+## Adapted to work with Core_Dispatch
+
 I found a fix to the Nil values in the server console, it happened because when we are in the selection menu, the resource want an id, at that momento we dont have that, so the fix i found is going to the rs-spawn (qb-spawn) in this part https://prnt.sc/wdv3av  put the trigger event in this case is  TriggerEvent('gcphone:FixOnLoad)  like the image.
+
+### Thanks to TechnoBehemoth and MadRP for the help fixing some bugs,
 
 To install this resource you need:
 
 
- * MenuV from Tigo https://github.com/ThymonA/menuv << Remember to COMPILE the resource or use this https://www.mediafire.com/file/czyq1jiw0tx5li8/menuv.rar/file
-
+ * MenuV from Tigo https://github.com/ThymonA/menuv 
+ * 
 * Run the SQL code.
 
 * The Resource name MUST BE gcphone
