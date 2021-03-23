@@ -71,15 +71,15 @@ end
 
 RegisterNetEvent('jerico:factura')
 AddEventHandler('jerico:factura', function()
-    -- for k,v in ipairs(Config.BillJobs) do
-    --     if PlayerJob.name == v then
+ for k,v in ipairs(Config.BillJobs) do
+         if PlayerJob.name == v then
             OpenMenu1()
-    --     else
-    --         FXCore.Functions.Notify("You don`t have the job")
+         else
+            FXCore.Functions.Notify("You don`t have the job")
 
-    --     end
+       end
 
-    -- end
+     end
 end)
 
 OpenMenu1 = function()
@@ -117,7 +117,7 @@ function newNews1()
     local dialog1
     local dialog2
     local dialog3
-    local dialog4
+ 
 
     local assert   = assert
     local MenuV    = assert(MenuV)
@@ -129,7 +129,7 @@ function newNews1()
     local checkbox  = menu1:AddCheckbox({ icon = '💡', label = "Player ID", value = 'n' })
     local checkbox1 = menu1:AddCheckbox({ icon = '💡', label = "Content", value = 'n', disabled = false })
     local checkbox2 = menu1:AddCheckbox({ icon = '💡', label = "Amount", value = 'n', disabled = false })
-    local checkbox3 = menu1:AddCheckbox({ icon = '💡', label = "Type", value = 'n', disabled = false })
+   -- local checkbox3 = menu1:AddCheckbox({ icon = '💡', label = "Type", value = 'n', disabled = false })
     local button    = menu1:AddButton({ icon = '💰', label = 'Send Bill', value = 10, description = 'Send Bill to the Player' })
     checkbox:On("check", function()
         TriggerEvent("Input:Open", "Player ID", "FXCore", function(p)
@@ -160,19 +160,11 @@ function newNews1()
 
         end)
     end)
-    checkbox3:On("check", function()
-        TriggerEvent("Input:Open", "Type", "FXCore", function(p)
-            local price = p
 
-            dialog4     = price
-
-
-        end)
-    end)
 
 
     button:On("select", function()
-        TriggerServerEvent("gcPhone_billing:sendBill", dialog1, dialog2, dialog3,dialog4)
+        TriggerServerEvent("gcPhone_billing:sendBill", dialog1, dialog2, dialog3)
         MenuV:CloseMenu(menu1)
     end)
 end
