@@ -7,7 +7,7 @@ RegisterNetEvent('FXCore:Client:OnPlayerLoaded')
 AddEventHandler('FXCore:Client:OnPlayerLoaded', function()
 
     PlayerJob = FXCore.Functions.GetPlayerData().job
-    NetworkSetTalkerProximity(0)
+  --  NetworkSetTalkerProximity(0)
 
     
 end)
@@ -112,14 +112,24 @@ function newNews()
 
     end)
     checkbox2:On("check",function()
-        TriggerEvent("Input:Open","URL IMAGE","FXCore",function(p)
-            local price = (p and tostring(p) and tostring(p) == "")
-
-            dialog3 = p
 
 
+        exports['screenshot-basic']:requestScreenshotUpload(Config.Discord, "files[]", function(data)
+            local image = json.decode(data)
+            DestroyMobilePhone()
+            CellCamActivate(false, false)
+           -- cb(json.encode({ url = image.attachments[1].proxy_url }))
+            dialog3 = image.attachments[1].proxy_url
+          end)
 
-        end)
+        -- TriggerEvent("Input:Open","URL IMAGE","FXCore",function(p)
+        --     local price = (p and tostring(p) and tostring(p) == "")
+
+            
+
+
+
+      --  end)
     end)
 
     button:On("select",function()

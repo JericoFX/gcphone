@@ -29,7 +29,7 @@ FixePhone = {
 
   ['008-0001'] = { name = "Cabine Telephonique", coords = { x = 372.25, y = -965.75, z = 28.58 } },
 }
-
+Config.CoreDispatch = false
 ShowNumberNotification = true 
 Config.Core = "FXCore:GetObject"
 Config.CoreNotify = "FXCore:Notify"

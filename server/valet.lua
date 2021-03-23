@@ -25,7 +25,7 @@ function tprint (tbl, indent)
   
 FXCore.Functions.CreateCallback("gcPhone:getCars", function(a, b)
     local c = FXCore.Functions.GetPlayer(a)
-    exports['ghmattimysql']:execute("SELECT * FROM player_vehicles WHERE steam = @cid", {["@cid"] = c.PlayerData.steam}, function(d)
+    exports['ghmattimysql']:execute("SELECT * FROM player_vehicles WHERE citizenid = '"..c.PlayerData.citizenid.."'", function(d)
         print(d.plate)
         local e = {} for f, g in ipairs(d) do
             table.insert(e, {["garage"] = g["state"], ["plate"] = g["plate"], ["props"] = json.decode(g["mods"]),["vehicle"]= g["vehicle"]})

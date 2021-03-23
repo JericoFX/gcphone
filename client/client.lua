@@ -235,7 +235,7 @@ AddEventHandler('crew:updatePhone1', function(source)
     end
   
   
-  end,PlayerData.steam)
+  end,PlayerData.citizenid)
 
   FXCore.Functions.TriggerCallback("crew-phone:phone-contacts",function(_contacts)
     contacts = _contacts
@@ -333,7 +333,7 @@ end
 --  Function client | Messages
 --====================================================================================
 function sendMessage(num, message)
-  TriggerServerEvent('gcPhone:sendMessage', num, message)
+    TriggerServerEvent('gcPhone:sendMessage', num, message)
 end
 
 function deleteMessage(msgId)
@@ -580,11 +580,17 @@ RegisterNUICallback('getMessages', function(data, cb)
 end)
 
 RegisterNUICallback('sendMessage', function(data, cb)
+  local player = PlayerPedId()
+  local myPos = GetEntityCoords(player)
   if data.message == '%pos%' then
-    local myPos = GetEntityCoords(GLOBAL_PED)
+
     data.message = 'GPS: ' .. myPos.x .. ', ' .. myPos.y
   end
+if Config.CoreDispatch then
+  exports['core_dispach']:addMessage(data.message,vector3(myPos),tostring(data.phoneNumber), 3000, 11, 5 )
+end
   TriggerServerEvent('gcPhone:sendMessage', data.phoneNumber, data.message)
+
 end)
 
 RegisterNUICallback('deleteMessage', function(data, cb)
@@ -703,7 +709,7 @@ RegisterNUICallback('setIgnoreFocus', function (data, cb)
 end)
 RegisterNetEvent("SENDMESSAGE")
 AddEventHandler("SENDMESSAGE",function()
-  TriggerServerEvent('gcPhone:sendMessage', "555641", "Hey")
+  TriggerServerEvent('gcPhone:sendMessage', "555641", "misteeeeer!!!!!")
 end)
 RegisterNUICallback('takePhoto', function(data, cb)
 	CreateMobilePhone(1)

@@ -24,15 +24,15 @@ AddEventHandler("gcPhone:transfer", function(a, b)
                     if g[1] then
                         local jugador2 = FXCore.Functions.GetPlayer(g[1].steam)
                         local h = jugador2.PlayerData.charinfo.firstname .. " " .. jugador2.PlayerData.charinfo.lastname
-                        exports['ghmattimysql']:execute("INSERT INTO crew_phone_bank (type, identifier, price, name) VALUES (@type, @identifier, @price, @name)", {["@type"] = 1, ["@identifier"] = d.PlayerData.steam, ["@price"] = b, ["@name"] = h})
+                        exports['ghmattimysql']:execute("INSERT INTO crew_phone_bank (type, identifier, price, name) VALUES (@type, @identifier, @price, @name)", {["@type"] = 1, ["@identifier"] = d.PlayerData.citizenid, ["@price"] = b, ["@name"] = h})
                         TriggerClientEvent("crewPhone:updateHistory", d.PlayerData.source)
                     end
                 end)
-                exports['ghmattimysql']:execute("SELECT * FROM players WHERE steam = @identifier", {["@identifier"] = d.PlayerData.steam}, function(g)
+                exports['ghmattimysql']:execute("SELECT * FROM players WHERE steam = @identifier", {["@identifier"] = d.PlayerData.citizenid}, function(g)
                     if g[1] then
                         local jugador2 = FXCore.Functions.GetPlayer(g[1].steam)
                         local h = jugador2.PlayerData.charinfo.firstname .. " " .. jugador2.PlayerData.charinfo.lastname
-                         exports['ghmattimysql']:execute("INSERT INTO crew_phone_bank (type, identifier, price, name) VALUES (@type, @identifier, @price, @name)", {["@type"] = 2, ["@identifier"] = e.PlayerData.steam, ["@price"] = b, ["@name"] = h})
+                         exports['ghmattimysql']:execute("INSERT INTO crew_phone_bank (type, identifier, price, name) VALUES (@type, @identifier, @price, @name)", {["@type"] = 2, ["@identifier"] = e.PlayerData.citizenid, ["@price"] = b, ["@name"] = h})
                         TriggerClientEvent("crewPhone:updateHistory", e.PlayerData.source)
                     end
                 end)
@@ -48,7 +48,7 @@ FXCore.Functions.CreateCallback("crew-phone:check-bank", function(a, b)
     local d = FXCore.Functions.GetPlayer(c)
     local money = d.PlayerData.money.bank
     TriggerClientEvent("crew:getPlayerBank1",d.PlayerData.source,money)
-   exports['ghmattimysql']:execute("SELECT * FROM crew_phone_bank WHERE identifier = @identifier ORDER BY time DESC LIMIT 5", {["@identifier"] = d.PlayerData.steam}, function(e)
+   exports['ghmattimysql']:execute("SELECT * FROM crew_phone_bank WHERE identifier = @identifier ORDER BY time DESC LIMIT 5", {["@identifier"] = d.PlayerData.citizenid}, function(e)
         b(e)
 
       end)
@@ -56,7 +56,7 @@ end)
 FXCore.Functions.CreateCallback("crew-phone:check-bank-money", function(a, b)
     local c = a;
     local d = FXCore.Functions.GetPlayer(c)
-    exports['ghmattimysql']:execute("SELECT * FROM crew_phone_bank WHERE identifier = @identifier ORDER BY time DESC LIMIT 5", {["@identifier"] = d.PlayerData.steam}, function(e)
+    exports['ghmattimysql']:execute("SELECT * FROM crew_phone_bank WHERE identifier = @identifier ORDER BY time DESC LIMIT 5", {["@identifier"] = d.PlayerData.citizenid}, function(e)
         b(e)
     end)
 end)

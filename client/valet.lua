@@ -68,7 +68,9 @@ RegisterNUICallback('getCarsValet', function(data)
         Citizen.Wait(0)
     end
     SpawnVehicle(playerPos.x, playerPos.y, playerPos.z, vehhash, driverhash, data.props)
+    print(plate)
 end,plate)
+
     Wait(2000)
     TriggerEvent("vehiclekeys:client:SetOwner",plate)
   --  TriggerEvent('vehiclekeys:client:ToggleEngine')
@@ -104,7 +106,7 @@ function GoToTarget(x, y, z, vehicle, driver, vehhash, target)
         local playerPos = GetEntityCoords(player)
         SetDriverAbility(driver, 1.0)        -- values between 0.0 and 1.0 are allowed.
         SetDriverAggressiveness(driver, 0.0)
-        TaskVehicleDriveToCoord(driver, vehicle, playerPos.x, playerPos.y, playerPos.z, 20.0, 0, vehhash, 541851839, 1, true)
+        TaskVehicleDriveToCoordLongrange(driver, vehicle, playerPos.x, playerPos.y, playerPos.z, 20.0, 0, 786468, 1)
         local distanceToTarget = #(playerPos - GetEntityCoords(vehicle))
         if distanceToTarget < 15 or distanceToTarget > 150 then
             RemoveBlip(mechBlip)

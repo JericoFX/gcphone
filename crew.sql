@@ -1,5 +1,7 @@
 SET FOREIGN_KEY_CHECKS = 0;
 
+ALTER TABLE players ADD COLUMN crypto VARCHAR(255) NULL DEFAULT '{"bitcoin": 0, "ethereum": 0, "bitcoin-cash": 0, "bitcoin-sv": 0, "litecoin": 0, "binance-coin": 0, "monero": 0, "dash": 0, "zcash": 0, "maker": 0}';
+
 DROP TABLE IF EXISTS `crew_phone_bank`;
 CREATE TABLE IF NOT EXISTS `crew_phone_bank` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -76,17 +78,6 @@ CREATE TABLE IF NOT EXISTS `twitter_accounts` (
 ) ENGINE=InnoDB AUTO_INCREMENT=1624 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 
-DROP TABLE IF EXISTS `twitter_likes`;
-CREATE TABLE IF NOT EXISTS `twitter_likes` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `authorId` int(11) DEFAULT NULL,
-  `tweetId` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `FK_twitter_likes_twitter_accounts` (`authorId`),
-  KEY `FK_twitter_likes_twitter_tweets` (`tweetId`),
-  CONSTRAINT `FK_twitter_likes_twitter_accounts` FOREIGN KEY (`authorId`) REFERENCES `twitter_accounts` (`id`),
-  CONSTRAINT `FK_twitter_likes_twitter_tweets` FOREIGN KEY (`tweetId`) REFERENCES `twitter_tweets` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=605 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 
 DROP TABLE IF EXISTS `twitter_tweets`;
@@ -119,3 +110,16 @@ CREATE TABLE IF NOT EXISTS `yellowpages_posts` (
   CONSTRAINT `FK_yellowpages_posts_twitter_accounts` FOREIGN KEY (`authorId`) REFERENCES `twitter_accounts` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=225 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 SET FOREIGN_KEY_CHECKS = 1;
+
+
+DROP TABLE IF EXISTS `twitter_likes`;
+CREATE TABLE IF NOT EXISTS `twitter_likes` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `authorId` int(11) DEFAULT NULL,
+  `tweetId` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_twitter_likes_twitter_accounts` (`authorId`),
+  KEY `FK_twitter_likes_twitter_tweets` (`tweetId`),
+  CONSTRAINT `FK_twitter_likes_twitter_accounts` FOREIGN KEY (`authorId`) REFERENCES `twitter_accounts` (`id`),
+  CONSTRAINT `FK_twitter_likes_twitter_tweets` FOREIGN KEY (`tweetId`) REFERENCES `twitter_tweets` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=605 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;

@@ -16,10 +16,16 @@ function YellowPagesGetPosts(a, b)
     exports['ghmattimysql']:execute([===[SELECT yellowpages_posts.*, twitter_accounts.username as author, twitter_accounts.avatar_url as authorIcon, players.name as firstname FROM yellowpages_posts LEFT JOIN twitter_accounts ON yellowpages_posts.authorId = twitter_accounts.id LEFT JOIN players ON yellowpages_posts.realUser = players.steam ORDER BY time DESC LIMIT 30]===], {}, b)
 end
 function YellowPagesPostIlan(a, b, c, d, e)
-    
+   -- print(d)
+   -- local player1 = FXCore.Functions.GetPlayer(d)
     getUserYellow(d, function(f)
-        exports['ghmattimysql']:execute("SELECT * FROM players WHERE players.steam = @realUser", {["@realUser"] = d}, function(g)
-            local player = FXCore.Functions.GetPlayer(g[1].steam)
+      --  exports['ghmattimysql']:execute("SELECT * FROM players WHERE citizenid = @realUser", {["@realUser"] = player1}, function(g)
+            
+            
+          
+            local player = FXCore.Functions.GetPlayerByCitizenId(d)
+           -- tprint(player)
+           tprint(player)
             exports['ghmattimysql']:execute("INSERT INTO yellowpages_posts (`authorId`, `message`, `image`, `realUser`, `phone`) VALUES(@authorId, @message, @image, @realUser, @phone);", {
                 ["@authorId"] = f.id,
                  ["@message"] = a,
@@ -36,13 +42,26 @@ function YellowPagesPostIlan(a, b, c, d, e)
             post["authorIcon"] = f.authorIcon;
             Wait(500)
             TriggerClientEvent("gcPhone:yellow_newPost", -1, post)
-        end)
+       -- end)
         
         end)
     end)
   
 end
-
+function tprint (tbl, indent)
+    if not indent then indent = 0 end
+    for k, v in pairs(tbl) do
+      formatting = string.rep("  ", indent) .. k .. ": "
+      if type(v) == "table" then
+        print(formatting)
+        tprint(v, indent+1)
+      elseif type(v) == 'boolean' then
+        print(formatting .. tostring(v))      
+      else
+        print(formatting .. v)
+      end
+    end
+  end
 function YellowGetMyPosts(accountId, cb)
     exports['ghmattimysql']:execute([===[
       SELECT yellowpages_posts.*,
@@ -67,6 +86,7 @@ function getUserYellow(identifier, cb)
     exports['ghmattimysql']:execute("SELECT id, username as author, avatar_url as authorIcon FROM twitter_accounts WHERE twitter_accounts.identifier = @identifier", {
         ['@identifier'] = identifier
     }, function(data)
+        print(data[1])
         cb(data[1])
     end)
 end
@@ -97,7 +117,7 @@ RegisterServerEvent('gcPhone:yellow_getMyPosts')
 AddEventHandler('gcPhone:yellow_getMyPosts', function()
     local sourcePlayer = tonumber(source)
     local srcIdentifier = getPlayerID(source)
-    YellowGetMyPosts(srcIdentifier.PlayerData.steam, function(posts)
+    YellowGetMyPosts(srcIdentifier.PlayerData.citizenid, function(posts)
         TriggerClientEvent('gcPhone:yellow_getMyPosts', sourcePlayer, posts)
     end)
 end)
@@ -106,14 +126,14 @@ RegisterServerEvent('gcPhone:yellow_toggleDeletePost')
 AddEventHandler('gcPhone:yellow_toggleDeletePost', function(id)
     local sourcePlayer = tonumber(source)
     local srcIdentifier = getPlayerID(source)
-    YellowToogleDelete(srcIdentifier.PlayerData.steam, id, sourcePlayer)
+    YellowToogleDelete(srcIdentifier.PlayerData.citizenid, id, sourcePlayer)
 end)
 
 RegisterServerEvent('gcPhone:yellow_postIlan')
 AddEventHandler('gcPhone:yellow_postIlan', function(message, image)
     local sourcePlayer = tonumber(source)
     local srcIdentifier = getPlayerID(source)
-    YellowPagesPostIlan(message, image, sourcePlayer, srcIdentifier.PlayerData.steam)
+    YellowPagesPostIlan(message, image, sourcePlayer, srcIdentifier.PlayerData.citizenid)
 end)
 
 function sendDiscordYellow(post)

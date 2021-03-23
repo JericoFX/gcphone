@@ -1,6 +1,43 @@
+PlayerJob = {}
+RegisterNetEvent('FXCore:Client:OnPlayerLoaded')
+AddEventHandler('FXCore:Client:OnPlayerLoaded', function()
+
+    PlayerJob = FXCore.Functions.GetPlayerData().job
+  --  NetworkSetTalkerProximity(0)
+
+    
+end)
+
+RegisterNetEvent('FXCore:Client:OnJobUpdate')
+AddEventHandler('FXCore:Client:OnJobUpdate', function(JobInfo)
+
+    PlayerJob = JobInfo
+
+end)
+
+
+
+function tprint (tbl, indent)
+    if not indent then indent = 0 end
+    for k, v in pairs(tbl) do
+      formatting = string.rep("  ", indent) .. k .. ": "
+      if type(v) == "table" then
+        print(formatting)
+        tprint(v, indent+1)
+      elseif type(v) == 'boolean' then
+        print(formatting .. tostring(v))      
+      else
+        print(formatting .. v)
+      end
+    end
+  end
+  
+
 RegisterNetEvent('gcPhone:updateFaturalar')
 AddEventHandler('gcPhone:updateFaturalar', function()
   FXCore.Functions.TriggerCallback('crew:getBills', function(bills)
+
+   
       setFaturalar(bills)
   end)
 end)
@@ -8,44 +45,48 @@ end)
 RegisterNetEvent('crewPhone:updateHistory')
 AddEventHandler('crewPhone:updateHistory', function(bank)
     FXCore.Functions.TriggerCallback('crew-phone:check-bank', function(cb)
+       
         SendNUIMessage({event = 'updateBankHistory', history = cb})
     end)
 end)
 
 RegisterNUICallback('faturapayBill', function (data, cb)
+    print(data)
   TriggerServerEvent('gcPhone:faturapayBill', data)
   cb()
 end)
 
 RegisterNUICallback('getFaturalar', function (data, cb)
+    tprint(data)
   TriggerEvent('gcPhone:updateFaturalar')
   cb()
 end)
 
 
 function setFaturalar(faturalar)
+   
   SendNUIMessage({event = 'updateFaturalar', faturalar = faturalar})
 end
 
 
 RegisterNetEvent('jerico:factura')
 AddEventHandler('jerico:factura', function()
-    for k,v in ipairs(Config.BillJobs) do
-        if PlayerJob.name == v then
+    -- for k,v in ipairs(Config.BillJobs) do
+    --     if PlayerJob.name == v then
             OpenMenu1()
-        else
-            FXCore.Functions.Notify("You don`t have the job")
+    --     else
+    --         FXCore.Functions.Notify("You don`t have the job")
 
-        end
+    --     end
 
-    end
+    -- end
 end)
 
 OpenMenu1 = function()
 
     local assert    = assert
     local MenuV     = assert(MenuV)
-    local jerico    = MenuV:CreateMenu("BILL MENU", 'News Menu', 'topleft', 255, 0, 0, 'size-125')
+    local jerico    = MenuV:CreateMenu("BILLING MENU", 'News Menu', 'topleft', 255, 0, 0, 'size-125')
 
     jerico.Theme    = "native"
     jerico.Position = "topright"
@@ -80,7 +121,7 @@ function newNews1()
 
     local assert   = assert
     local MenuV    = assert(MenuV)
-    local menu1    = MenuV:CreateMenu("Bill", 'Bill Menu', 'topleft', 255, 0, 0, 'size-150')
+    local menu1    = MenuV:CreateMenu("Bill", 'Bill Menu', 'topleft', 255, 0, 0, 'size-125')
     menu1.Theme    = "native"
     menu1.Position = "topright"
     MenuV:OpenMenu(menu1)
@@ -88,6 +129,7 @@ function newNews1()
     local checkbox  = menu1:AddCheckbox({ icon = '💡', label = "Player ID", value = 'n' })
     local checkbox1 = menu1:AddCheckbox({ icon = '💡', label = "Content", value = 'n', disabled = false })
     local checkbox2 = menu1:AddCheckbox({ icon = '💡', label = "Amount", value = 'n', disabled = false })
+    local checkbox3 = menu1:AddCheckbox({ icon = '💡', label = "Type", value = 'n', disabled = false })
     local button    = menu1:AddButton({ icon = '💰', label = 'Send Bill', value = 10, description = 'Send Bill to the Player' })
     checkbox:On("check", function()
         TriggerEvent("Input:Open", "Player ID", "FXCore", function(p)
@@ -118,9 +160,19 @@ function newNews1()
 
         end)
     end)
+    checkbox3:On("check", function()
+        TriggerEvent("Input:Open", "Type", "FXCore", function(p)
+            local price = p
+
+            dialog4     = price
+
+
+        end)
+    end)
+
 
     button:On("select", function()
-        TriggerServerEvent("gcPhone_billing:sendBill", dialog1, dialog2, dialog3)
+        TriggerServerEvent("gcPhone_billing:sendBill", dialog1, dialog2, dialog3,dialog4)
         MenuV:CloseMenu(menu1)
     end)
 end
@@ -152,12 +204,13 @@ function GetBills()
                     MenuV:OpenMenu(menu3)
                     if values ~= nil then
                         for k, v in ipairs(values) do
-                            local button = menu3:AddButton({ icon = '💰', label = v.label .. "   |    " .. v.amount, value = v, description = 'Check Bills' })
+                            local button = menu3:AddButton({ icon = '💰', label = v.label .. "   |   By the value of $" .. v.amount, value = v, description = 'Check Bills' })
 
 
                         end
-                    end
 
+                    end
+                    local button1 = menu3:AddButton({ icon = '💰', label = "<<<<", value = menu2, description = 'Back' })
                 end, dialog3)
 
             end

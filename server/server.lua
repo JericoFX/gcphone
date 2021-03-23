@@ -47,7 +47,7 @@ FXCore.Functions.CreateCallback('crew-phone:phone-contacts', function(source, cb
     local xPlayer = FXCore.Functions.GetPlayer(source)
     if not xPlayer then return; end
     exports['ghmattimysql']:execute("SELECT * FROM phone_users_contacts WHERE identifier = @identifier", {
-        ['@identifier'] = xPlayer.PlayerData.steam
+        ['@identifier'] = xPlayer.PlayerData.citizenid
     },function(result)
         cb(result)
     end)
@@ -57,13 +57,13 @@ FXCore.Functions.CreateCallback('crew-phone:phone-sendHistoriqueCall', function(
     local xPlayer = FXCore.Functions.GetPlayer(source)
     if not xPlayer then return; end
     
-    cb(sendHistoriqueCall(source,xPlayer.PlayerData.steam))
+    cb(sendHistoriqueCall(source,xPlayer.PlayerData.citizenid))
 end)
 FXCore.Functions.CreateCallback('crew-phone:phone-messages', function(source, cb)
     local xPlayer = FXCore.Functions.GetPlayer(source)
     if not xPlayer then return; end
      exports['ghmattimysql']:execute("SELECT phone_messages_crew.*, '"..xPlayer.PlayerData.charinfo.phone.."' FROM phone_messages_crew LEFT JOIN players ON players.steam = @identifier WHERE phone_messages_crew.receiver = '"..xPlayer.PlayerData.charinfo.phone.."'", {
-        ['@identifier'] = xPlayer.PlayerData.steam
+        ['@identifier'] = xPlayer.PlayerData.citizenid
    },function(result)
 
 cb(result)
@@ -121,7 +121,7 @@ end
 function getSourceFromIdentifier(identifier, cb)
     local xPlayers = FXCore.Functions.GetPlayers()
     for k, user in pairs(xPlayers) do
-        if GetPlayerIdentifiers(user)[1] == identifier.PlayerData.steam then
+        if FXCore.Functions.GetPlayer(user).PlayerData.citizenid == identifier.PlayerData.citizenid then
             cb(user)
             return
         end
@@ -143,28 +143,29 @@ function getUserTwitterAccount(source, _identifier)
     local _source = source
     local identifier = _identifier
     local xPlayer = FXCore.Functions.GetPlayer(_source)
+    print(identifier,identifier.PlayerData.citizenid)
+    --exports['ghmattimysql']:execute("SELECT * FROM players WHERE citizenid = @identifier", {
+       -- ['@identifier'] = identifier.PlayerData.citizenid
+  --  }, function(result2)
+      --  print(result2[1].citizenid)
+      --  local user = result2[1]
+      --  local player = FXCore.Functions.GetPlayer(user).PlayerData.citizenid
 
-    exports['ghmattimysql']:execute("SELECT * FROM players WHERE steam = @identifier", {
-        ['@identifier'] = identifier.PlayerData.steam
-    }, function(result2)
-        local user = result2[1]
-        local player = FXCore.Functions.GetPlayer(user.steam)
-
-        if user == nil then 
-            karakteribekle(xPlayer.PlayerData.source, identifier.PlayerData.steam)
+        if identifier == nil then 
+            karakteribekle(xPlayer.PlayerData.source, identifier.PlayerData.citizenid)
         else
-            local FirstLastName = player.PlayerData.charinfo['firstname'] .. ' ' .. player.PlayerData.charinfo['lastname']
+            local FirstLastName = identifier.PlayerData.charinfo['firstname'] .. ' ' .. identifier.PlayerData.charinfo['lastname']
             TriggerClientEvent('crew:getPlayerBank', _source, xPlayer.PlayerData.money.bank, FirstLastName)
             exports['ghmattimysql']:execute("SELECT * FROM twitter_accounts WHERE identifier = @identifier", {
-                ['@identifier'] = identifier.PlayerData.steam
+                ['@identifier'] = identifier.PlayerData.citizenid
             }, function(result)
                 if #result == 0  then
                     exports['ghmattimysql']:execute("INSERT INTO twitter_accounts (identifier, username) VALUES (@identifier, @username)", { 
-                        ['@identifier'] = identifier.PlayerData.steam,
+                        ['@identifier'] = identifier.PlayerData.citizenid,
                         ['@username'] = FirstLastName
                     }, function()
 
-                        TriggerEvent('gcPhone:twitter_login', _source, identifier.PlayerData.steam)
+                        TriggerEvent('gcPhone:twitter_login', _source, identifier.PlayerData.citizenid)
                     end)
                 else
 
@@ -173,7 +174,7 @@ function getUserTwitterAccount(source, _identifier)
                 end
             end)
         end
-    end)
+  --  end)
 end
 
 function karakteribekle(source, identifier)
@@ -253,7 +254,7 @@ function notifyContactChange(source, identifier)
     local sourcePlayer = tonumber(source)
     local identifier = getPlayerID(identifier)
     exports['ghmattimysql']:execute("SELECT * FROM phone_users_contacts WHERE identifier = @identifier", {
-        ['@identifier'] = identifier.PlayerData.steam
+        ['@identifier'] = identifier.PlayerData.citizenid
     },function(result)
         TriggerClientEvent("gcPhone:contactList", sourcePlayer, result)
     end)
@@ -286,21 +287,21 @@ RegisterServerEvent('gcPhone:addContact')
 AddEventHandler('gcPhone:addContact', function(display, phoneNumber)
     local sourcePlayer = tonumber(source)
     local identifier = getPlayerID(sourcePlayer)
-    addContact(sourcePlayer, identifier.PlayerData.steam, phoneNumber, display)
+    addContact(sourcePlayer, identifier.PlayerData.citizenid, phoneNumber, display)
 end)
 
 RegisterServerEvent('gcPhone:updateContact')
 AddEventHandler('gcPhone:updateContact', function(id, display, phoneNumber)
     local sourcePlayer = tonumber(source)
     local identifier = getPlayerID(sourcePlayer)
-    updateContact(sourcePlayer, identifier.PlayerData.steam, id, phoneNumber, display)
+    updateContact(sourcePlayer, identifier.PlayerData.citizenid, id, phoneNumber, display)
 end)
 
 RegisterServerEvent('gcPhone:deleteContact')
 AddEventHandler('gcPhone:deleteContact', function(id)
     local sourcePlayer = tonumber(source)
     local identifier = getPlayerID(sourcePlayer)
-    deleteContact(sourcePlayer, identifier.PlayerData.steam, id)
+    deleteContact(sourcePlayer, identifier.PlayerData.citizenid, id)
 end)
 
 --====================================================================================
@@ -308,7 +309,7 @@ end)
 --====================================================================================
 function getMessages(identifier)
     local result = exports['ghmattimysql']:execute("SELECT phone_messages_crew.*, '"..identifier.PlayerData.charinfo.phone.."' FROM phone_messages_crew LEFT JOIN players ON players.steam = @identifier WHERE phone_messages_crew.receiver = '"..identifier.PlayerData.charinfo.phone.."'", {
-         ['@identifier'] = identifier.PlayerData.steam
+         ['@identifier'] = identifier.PlayerData.citizenid
     })
     return result
 end
@@ -337,47 +338,45 @@ function addMessage(source, identifier, phone_number, message)
 	local sourcePlayer    = tonumber(source)
 	local otherIdentifier = getIdentifierByPhoneNumber(phone_number)
 	local myPhone         = identifier.PlayerData.charinfo.phone
+    if not Config.CoreDispatch then -- Thanks to TechnoBehemoth to help me fixing this stuff
 	xPlayers              = FXCore.Functions.GetPlayers()
 	for k, v in ipairs(xPlayers) do
-
 		local Player = FXCore.Functions.GetPlayer(v)
 		for j, l in ipairs(Config.SMSJobs) do
 			if phone_number == l then
 				if Player.PlayerData.job.name == l then
-
 					local tomess = _internalAddMessage(myPhone, phone_number, message, 0)
-					--   local mymensaje = _internalAddMessage(myPhone, phone_number, message, 0)
 					TriggerClientEvent("gcPhone:receiveMessage", Player.PlayerData.source, tomess)
-					-- TriggerClientEvent("gcPhone:receiveMessage", Player.PlayerData.source, mymensaje)
 				end
-
 				local memess = _internalAddMessage(phone_number, myPhone, message, 1)
 				TriggerClientEvent("gcPhone:receiveMessage", sourcePlayer, memess)
-		
-
-				
-
+                 
             end
-
-
         end
-
-
     end
-
-    if otherIdentifier ~= nil then
-        print("from "..myPhone.." to "..phone_number)
-        local tomess = _internalAddMessage(myPhone, phone_number, message, 0)
-        getSourceFromIdentifier(otherIdentifier, function (osou)
-            if tonumber(osou) ~= nil then
-                TriggerClientEvent("gcPhone:receiveMessage", tonumber(osou), tomess)
-
-            end
-        end)
-        local memess = _internalAddMessage(phone_number, myPhone, message, 1)
-        TriggerClientEvent("gcPhone:receiveMessage", sourcePlayer, memess)
+end
+if otherIdentifier ~= nil then --if is a player run this
+             
+    local tomess = _internalAddMessage(myPhone, phone_number, message, 0)
+    getSourceFromIdentifier(otherIdentifier, function (osou)
+        if tonumber(osou) ~= nil then
+            TriggerClientEvent("gcPhone:receiveMessage", tonumber(osou), tomess)
+        end
+     end)
+   
+    local memess = _internalAddMessage(phone_number, myPhone, message, 1)
+    TriggerClientEvent("gcPhone:receiveMessage", sourcePlayer, memess)
+   
+    elseif phone_number == "Anonymous" then --here you can put anything, ex: if "anonymous send a message you will recive it like that"
+    local tomess = _internalAddMessage(myPhone, "Anonymouse", message, 0)
+    TriggerClientEvent("gcPhone:receiveMessage", sourcePlayer, tomess)
+  
+    else
+            local tomess = _internalAddMessage(myPhone, phone_number, message, 0) -- no ID 
+            TriggerClientEvent("gcPhone:receiveMessage", sourcePlayer, tomess)
     end
-
+  
+    
 end
 
 function setReadMessageNumber(identifier, num)
@@ -427,14 +426,14 @@ RegisterServerEvent('gcPhone:deleteMessageNumber')
 AddEventHandler('gcPhone:deleteMessageNumber', function(number)
     local sourcePlayer = tonumber(source)
     local identifier = getPlayerID(sourcePlayer)
-    deleteAllMessageFromPhoneNumber(sourcePlayer,identifier.PlayerData.steam, number)
+    deleteAllMessageFromPhoneNumber(sourcePlayer,identifier.PlayerData.citizenid, number)
 end)
 
 RegisterServerEvent('gcPhone:deleteAllMessage')
 AddEventHandler('gcPhone:deleteAllMessage', function()
     local sourcePlayer = tonumber(source)
     local identifier = getPlayerID(sourcePlayer)
-    deleteAllMessage(identifier.PlayerData.steam)
+    deleteAllMessage(identifier.PlayerData.citizenid)
 end)
 
 RegisterServerEvent('gcPhone:setReadMessageNumber')
@@ -448,9 +447,9 @@ RegisterServerEvent('gcPhone:deleteALL')
 AddEventHandler('gcPhone:deleteALL', function()
     local sourcePlayer = tonumber(source)
     local identifier = getPlayerID(sourcePlayer)
-    deleteAllMessage(identifier.PlayerData.steam)
-    deleteAllContact(identifier.PlayerData.steam)
-    appelsDeleteAllHistorique(identifier.PlayerData.steam)
+    deleteAllMessage(identifier.PlayerData.citizenid)
+    deleteAllContact(identifier.PlayerData.citizenid)
+    appelsDeleteAllHistorique(identifier.PlayerData.citizenid)
     TriggerClientEvent("gcPhone:contactList", sourcePlayer, {})
     TriggerClientEvent("gcPhone:allMessage", sourcePlayer, {})
     TriggerClientEvent("appelsDeleteAllHistorique", sourcePlayer, {})
@@ -547,7 +546,7 @@ AddEventHandler('gcPhone:internal_startCall', function(source, phone_number, rtc
         srcPhone = srcIdentifier.PlayerData.charinfo.phone
     end
     local destPlayer = getIdentifierByPhoneNumber(phone_number)
-    local is_valid = destPlayer ~= nil and destPlayer ~= srcIdentifier.PlayerData.steam
+    local is_valid = destPlayer ~= nil and destPlayer ~= srcIdentifier.PlayerData.citizenid
     AppelsEnCours[indexCall] = {
         id = indexCall,
         transmitter_src = sourcePlayer,
@@ -665,7 +664,7 @@ RegisterServerEvent('gcPhone:appelsDeleteAllHistorique')
 AddEventHandler('gcPhone:appelsDeleteAllHistorique', function ()
     local sourcePlayer = tonumber(source)
     local srcIdentifier = getPlayerID(sourcePlayer)
-    appelsDeleteAllHistorique(srcIdentifier.PlayerData.steam)
+    appelsDeleteAllHistorique(srcIdentifier.PlayerData.citizenid)
 end)
 
 
