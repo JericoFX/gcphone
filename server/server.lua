@@ -252,9 +252,8 @@ end
 function notifyContactChange(source, identifier)
    
     local sourcePlayer = tonumber(source)
-    local identifier = getPlayerID(identifier)
     exports['ghmattimysql']:execute("SELECT * FROM phone_users_contacts WHERE identifier = @identifier", {
-        ['@identifier'] = identifier.PlayerData.citizenid
+        ['@identifier'] = identifier
     },function(result)
         TriggerClientEvent("gcPhone:contactList", sourcePlayer, result)
     end)
