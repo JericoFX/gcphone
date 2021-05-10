@@ -70,8 +70,8 @@ function TwitterToogleLike(identifier, tweetId, sourcePlayer)
     if identifier == nil then
         return
     else
-        local wachin = getPlayerID(identifier)
-    getUser(wachin.PlayerData.citizenid, function(user)
+ 
+    getUser(identifier, function(user)
         exports['ghmattimysql']:execute('SELECT * FROM twitter_tweets WHERE id = @id', {
             ['@id'] = tweetId
         }, function(tweets)
@@ -134,13 +134,13 @@ end
 RegisterServerEvent('gcPhone:twitter_login')
 AddEventHandler('gcPhone:twitter_login', function(source, identifier)
     local sourcePlayer = tonumber(source)
-    local wachin = getPlayerID(identifier)
-    if wachin == nil then
+
+    if identifier == nil then
 
         return
     else
 
-    getUser(wachin.PlayerData.citizenid, function(user)
+    getUser(identifier, function(user)
 
         if user ~= nil then
             TriggerClientEvent('gcPhone:twitter_setAccount', sourcePlayer, user.author, user.authorIcon)
