@@ -2,6 +2,17 @@ SET FOREIGN_KEY_CHECKS = 0;
 
 ALTER TABLE players ADD COLUMN crypto VARCHAR(255) NULL DEFAULT '{"bitcoin": 0, "ethereum": 0, "bitcoin-cash": 0, "bitcoin-sv": 0, "litecoin": 0, "binance-coin": 0, "monero": 0, "dash": 0, "zcash": 0, "maker": 0}';
 
+CREATE TABLE IF NOT EXISTS `billing` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `identifier` varchar(40) NOT NULL,
+  `sender` varchar(40) NOT NULL,
+  `target_type` varchar(50) NOT NULL,
+  `target` varchar(40) NOT NULL,
+  `label` varchar(255) NOT NULL,
+  `amount` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 DROP TABLE IF EXISTS `crew_phone_bank`;
 CREATE TABLE IF NOT EXISTS `crew_phone_bank` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
