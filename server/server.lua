@@ -330,52 +330,44 @@ function _internalAddMessage(transmitter, receiver, message, owner)
     local data = {message = message, time = tonumber(os.time().."000.0"), receiver = receiver, transmitter = transmitter, owner = owner, isRead = owner}
     return data
 end
+function has_value(tab, val)
+    for index, value in ipairs(tab) do
+        if value == val then
+            return true
+        end
+    end
 
-function addMessage(source, identifier, phone_number, message)
-   
-    --local Player = FXCore.Functions.GetPlayer(source)
-	local sourcePlayer    = tonumber(source)
-	local otherIdentifier = getIdentifierByPhoneNumber(phone_number)
-	local myPhone         = identifier.PlayerData.charinfo.phone
-    if not Config.CoreDispatch then -- Thanks to TechnoBehemoth to help me fixing this stuff
-	xPlayers              = FXCore.Functions.GetPlayers()
-	for k, v in ipairs(xPlayers) do
-		local Player = FXCore.Functions.GetPlayer(v)
-		for j, l in ipairs(Config.SMSJobs) do
-			if phone_number == l then
-				if Player.PlayerData.job.name == l then
-					local tomess = _internalAddMessage(myPhone, phone_number, message, 0)
-					TriggerClientEvent("gcPhone:receiveMessage", Player.PlayerData.source, tomess)
-				end
-				local memess = _internalAddMessage(phone_number, myPhone, message, 1)
-				TriggerClientEvent("gcPhone:receiveMessage", sourcePlayer, memess)
-                 
-            end
-        end
-    end
+    return false
 end
-if otherIdentifier ~= nil then --if is a player run this
-             
-    local tomess = _internalAddMessage(myPhone, phone_number, message, 0)
-    getSourceFromIdentifier(otherIdentifier, function (osou)
-        if tonumber(osou) ~= nil then
-            TriggerClientEvent("gcPhone:receiveMessage", tonumber(osou), tomess)
+function addMessage(source, identifier, phone_number, message)
+
+    -- local Player = QBCore.Functions.GetPlayer(source)
+    local sourcePlayer = tonumber(source)
+    local otherIdentifier = getIdentifierByPhoneNumber(phone_number)
+    local myPhone = identifier.PlayerData.charinfo.phone
+    if has_value(Config.SMSJobs, phone_number) then -- if is a number that is registered on Config send the message to the player who has the job
+        local xPlayers = QBCore.Functions.GetPlayers()
+        for k, v in ipairs(xPlayers) do
+            local Player = QBCore.Functions.GetPlayer(v)
+            local tomess = _internalAddMessage(myPhone, phone_number, message, 0)
+            TriggerClientEvent("gcPhone:receiveMessage", Player.PlayerData.source, tomess)
+            local memess = _internalAddMessage(phone_number, myPhone, message, 1)
         end
-     end)
-   
-    local memess = _internalAddMessage(phone_number, myPhone, message, 1)
-    TriggerClientEvent("gcPhone:receiveMessage", sourcePlayer, memess)
-   
-    elseif phone_number == "Anonymous" then --here you can put anything, ex: if "anonymous send a message you will recive it like that"
-    local tomess = _internalAddMessage(myPhone, "Anonymouse", message, 0)
-    TriggerClientEvent("gcPhone:receiveMessage", sourcePlayer, tomess)
-  
     else
-            local tomess = _internalAddMessage(myPhone, phone_number, message, 0) -- no ID 
-            TriggerClientEvent("gcPhone:receiveMessage", sourcePlayer, tomess)
+        if otherIdentifier ~= nil then -- if is a player run this
+            local tomess = _internalAddMessage(myPhone, phone_number, message, 0)
+            getSourceFromIdentifier(otherIdentifier, function(osou)
+                if tonumber(osou) ~= nil then
+                    TriggerClientEvent("gcPhone:receiveMessage", tonumber(osou), tomess)
+                end
+            end)
+            -- elseif phone_number == "Anonymous" then -- here you can put anything, ex: if "anonymous send a message you will recive it like that"
+            --     local tomess = _internalAddMessage(myPhone, "Anonymouse", message, 0)
+            --     TriggerClientEvent("gcPhone:receiveMessage", sourcePlayer, tomess)
+            --     print("372")
+        end
     end
-  
-    
+
 end
 
 function setReadMessageNumber(identifier, num)
